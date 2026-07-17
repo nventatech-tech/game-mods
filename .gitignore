@@ -1,6 +1,5 @@
 bin/
 obj/
-*.zip
 *.pdb
 
 # dlls do jogo/BepInEx usadas so como referencia de build

@@ -28,10 +28,9 @@ C# mods: `dotnet build -c Release` in the mod folder. Game assembly references r
 from the game install path set in each `.csproj` (`GameDir`/`ManagedDir` properties) —
 adjust to your install or pass `/p:GameDir=...`.
 
-Each mod folder has a `nexus-description.txt` with the mod page text and changelog.
+## 📦 Download
 
-## 📦 Release
-
-Zips follow the mod manager layout (`BepInEx/plugins/<Mod>.dll` for BepInEx games,
-flat dll for MelonLoader, game-specific trees for Cyberpunk) and are published on
-Nexus Mods — not stored in this repo.
+Each mod folder contains the release zip (same file published on Nexus Mods), in the
+mod manager layout: `BepInEx/plugins/<Mod>.dll` for BepInEx games, flat dll for
+MelonLoader, game-specific trees for Cyberpunk. Extract into the game folder or
+install with Vortex / Mod Organizer 2.
