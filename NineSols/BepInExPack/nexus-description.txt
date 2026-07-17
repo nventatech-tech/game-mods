@@ -1,0 +1,49 @@
+=== MOD NAME (Nexus "Name" field) ===
+BepInEx and Configuration Manager for Nine Sols
+
+=== SHORT SUMMARY (Nexus "Summary" field, max 250 chars) ===
+BepInEx 5 mod loader plus Configuration Manager, ready for Nine Sols. Required by Nine Sols Power Mod and other BepInEx mods. Extract to the game folder and play.
+
+=== DESCRIPTION (Nexus "Description" field, BBCode) ===
+[size=4][b]BepInEx and Configuration Manager for Nine Sols[/b][/size]
+
+BepInEx is the mod loader used by Nine Sols mods such as [b]Nine Sols Power Mod[/b]. This package bundles BepInEx 5 x64 with [b]Configuration Manager[/b], so you can change mod settings in-game. You only need to install it once.
+
+[size=3][b]📦 Installation[/b][/size]
+[list=1]
+[*]Extract the zip. Copy the [b]contents[/b] of the extracted [b]BepInEx[/b] folder ([b]winhttp.dll[/b], [b]doorstop_config.ini[/b] and the inner [b]BepInEx[/b] folder) into the game folder (the one with [b]NineSols.exe[/b]), usually:
+[b]C:\Program Files (x86)\Steam\steamapps\common\Nine Sols[/b]
+[*]Run the game once and close it. This creates the remaining [b]BepInEx[/b] subfolders.
+[*]Drop mod DLLs into [b]Nine Sols/BepInEx/plugins/[/b]
+[/list]
+
+[b]Linux / Steam Deck (Proton):[/b] BepInEx needs the winhttp override to load. In Steam, right click Nine Sols > Properties > Launch Options and set:
+[code]WINEDLLOVERRIDES="winhttp=n,b" %command%[/code]
+
+[size=3][b]Configuration Manager[/b][/size]
+Press [b]F1[/b] in-game to open the settings window and change any mod's options live.
+
+[size=3][b]Checking it works[/b][/size]
+After running the game once, [b]Nine Sols/BepInEx/LogOutput.log[/b] should exist and list the loaded plugins. If it doesn't exist, BepInEx isn't loading - wrong folder, or missing launch option on Linux.
+
+[size=3][b]Recommended[/b][/size]
+Playing on an ultrawide monitor (21:9 / 3440x1440)? The game needs [url=https://github.com/p1xel8ted/UltrawideFixes/releases]Nine Sols Ultrawide Fix by p1xel8ted[/url] to render correctly - drop its dll into [b]BepInEx/plugins/[/b] after installing this pack.
+
+[size=3][b]Credits[/b][/size]
+BepInEx is developed by the BepInEx team and released under LGPL-2.1 - [url=https://github.com/BepInEx/BepInEx]github.com/BepInEx/BepInEx[/url]
+Configuration Manager is part of the BepInEx project - [url=https://github.com/BepInEx/BepInEx.ConfigurationManager]github.com/BepInEx/BepInEx.ConfigurationManager[/url]
+
+[size=3][b]🧩 My other mods[/b][/size]
+[list]
+[*][url=https://www.nexusmods.com/ninesols/mods/16]Nine Sols Power Mod[/url] - God Mode, health/attack/gold multipliers, infinite dash and unlimited jades
+[/list]
+[url=https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods]All my mods[/url]
+
+[center][size=3][b]❤️ Support development[/b][/size]
+
+[url=https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD][img]https://raw.githubusercontent.com/nventatech-tech/cctop/main/contents/images/donate-qr.png[/img][/url]
+
+[url=https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD]Donate via PayPal[/url][/center]
+
+=== CHANGELOG ===
+Initial release — BepInEx 5 x64 + Configuration Manager, repacked for Nine Sols.

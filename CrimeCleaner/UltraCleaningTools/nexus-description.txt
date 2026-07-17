@@ -1,0 +1,50 @@
+=== MOD NAME (Nexus "Name" field) ===
+Ultra Cleaning Tools
+
+=== SHORT SUMMARY (Nexus "Summary" field, max 250 chars) ===
+Bigger cleaning area, sprays and cleaning liquids never run out, infinite power washer water (backpack too) and infinite trash bag capacity. Clean the whole scene without refilling or emptying anything.
+
+=== DESCRIPTION (Nexus "Description" field, BBCode) ===
+[size=4][b]Ultra Cleaning Tools[/b][/size]
+
+Supercharges every cleaning tool in Crime Scene Cleaner so you spend your time cleaning, not managing supplies.
+
+[size=3][b]✨ Features[/b][/size]
+[list]
+[*][b]Bigger cleaning area[/b] - tools clean a much larger radius per swipe (8x)
+[*][b]Infinite cleaning liquids[/b] - sprays and chemicals never run out
+[*][b]Infinite power washer[/b] - station and backpack water never deplete
+[*][b]Infinite trash bags[/b] - trash capacity never fills up
+[/list]
+
+[size=3][b]📋 Requirements[/b][/size]
+[list]
+[*][url=https://melonwiki.xyz/]MelonLoader[/url] installed in the game folder
+[/list]
+
+[size=3][b]📦 Installation[/b][/size]
+[list=1]
+[*]Install MelonLoader in the game folder and run the game once
+[*]Copy [b]UltraCleaningTools.dll[/b] into:
+[code]Crime Scene Cleaner/Mods/UltraCleaningTools.dll[/code]
+[*]Play
+[/list]
+
+[size=3][b]Notes[/b][/size]
+[list]
+[*]The trash patch waits a few seconds after each scene load to avoid interfering with loading - this is intentional
+[*]No game files are modified - safe to add or remove at any time
+[*]If something doesn't work, check the MelonLoader console/log and post it in the comments
+[/list]
+
+[size=3][b]🧩 My other mods[/b][/size]
+[url=https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods]All my mods[/url]
+
+[center][size=3][b]❤️ Support development[/b][/size]
+
+[url=https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD][img]https://raw.githubusercontent.com/nventatech-tech/cctop/main/contents/images/donate-qr.png[/img][/url]
+
+[url=https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD]Donate via PayPal[/url][/center]
+
+=== CHANGELOG (version 3.1) ===
+3.1 — Current release: 8x cleaning radius, infinite cleaning liquids, infinite power washer (station and backpack), infinite trash capacity, trash patch delayed after scene load for stability.

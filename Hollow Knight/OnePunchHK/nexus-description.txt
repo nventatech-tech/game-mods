@@ -1,0 +1,55 @@
+=== MOD NAME (Nexus "Name" field) ===
+One Punch HK
+
+=== SHORT SUMMARY (Nexus "Summary" field, max 250 chars) ===
+Nail damage multipliers up to one-hit kill, infinite charm slots, geo multipliers, keep geo on death, infinite shadow dash, immortality and free soul usage. Each option is independent; toggle the mod with F6.
+
+=== DESCRIPTION (Nexus "Description" field, BBCode) ===
+[size=4][b]One Punch HK[/b][/size]
+
+Gameplay boosters for Hollow Knight. Everything is off by default - enable only what you want in the config, each option is independent.
+
+[size=3][b]✨ Features[/b][/size]
+[list]
+[*][b]Nail damage[/b] - Off, X2, X3, X4, X5 or [b]HitKill[/b] (one-punch mode: everything dies in one hit)
+[*][b]Infinite charm slots[/b] - equip any charm combination, ignoring the notch limit
+[*][b]Geo multiplier[/b] - Off, X2, X3, X4, X5
+[*][b]Keep geo on death[/b] - no more corpse runs for your money
+[*][b]Infinite shadow dash[/b] - removes the shadow dash cooldown
+[*][b]Immortal player[/b] - no health loss
+[*][b]Free soul usage[/b] - spells and healing don't consume soul
+[*][b]F6[/b] toggles the whole mod on/off in-game (rebindable)
+[/list]
+
+[size=3][b]Configuration[/b][/size]
+The config file is created on first run at:
+[b]Hollow Knight/BepInEx/config/br.opaaaaaaaaaaaa.onepunchhk.cfg[/b]
+
+[size=3][b]📋 Requirements[/b][/size]
+BepInEx 5 (x64) installed in the Hollow Knight folder.
+
+[size=3][b]📦 Installation[/b][/size]
+[list=1]
+[*]Install BepInEx 5 in the game folder and run the game once
+[*]Extract the archive into the game folder (or install with Vortex). The file lands in:
+[code]Hollow Knight/BepInEx/plugins/OnePunchHK.dll[/code]
+[*]Play
+[/list]
+
+[size=3][b]Notes[/b][/size]
+[list]
+[*]The mod unpatches itself cleanly - safe to add or remove at any time
+[*]If something doesn't work, check [b]BepInEx/LogOutput.log[/b] and post it in the comments
+[/list]
+
+[size=3][b]🧩 My other mods[/b][/size]
+[url=https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods]All my mods[/url]
+
+[center][size=3][b]❤️ Support development[/b][/size]
+
+[url=https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD][img]https://raw.githubusercontent.com/nventatech-tech/cctop/main/contents/images/donate-qr.png[/img][/url]
+
+[url=https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD]Donate via PayPal[/url][/center]
+
+=== CHANGELOG (version 1.1) ===
+1.1 — Current release: nail damage modes up to HitKill, infinite charm slots, geo multiplier, keep geo on death, infinite shadow dash, immortality, free soul usage, F6 toggle.

@@ -1,0 +1,18 @@
+bin/
+obj/
+*.zip
+*.pdb
+
+# dlls do jogo/BepInEx usadas so como referencia de build
+Hollow Knight/OnePunchHK/lib/
+
+# mods de terceiros instalados (nao sao codigo deste repo)
+CyberPunk/BetterLootMarkers/
+CyberPunk/ImmersiveFirstPerson/
+CyberPunk/automatic_junk_scrapper_perk_2/
+CyberPunk/MovementAndCameraTweaks/
+CyberPunk/RicochetRedux/
+CyberPunk/SilentSilencersAndKnives/
+CyberPunk/SimpleXPMultiplier/
+CyberPunk/EnhancedVehicleCamera/
+CyberPunk/r6-scripts/

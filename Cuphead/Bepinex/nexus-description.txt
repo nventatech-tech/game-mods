@@ -1,0 +1,48 @@
+=== MOD NAME (Nexus "Name" field) ===
+BepInEx for Cuphead
+
+=== SHORT SUMMARY (Nexus "Summary" field, max 250 chars) ===
+BepInEx 5.4.23.5 mod loader, ready for Cuphead. Required by Cuphead Double Assist, Cuphead UltraWide and other BepInEx mods. Extract to the game folder and play.
+
+=== DESCRIPTION (Nexus "Description" field, BBCode) ===
+[size=4][b]BepInEx for Cuphead[/b][/size]
+
+BepInEx is the mod loader used by Cuphead mods such as [b]Cuphead Double Assist[/b] and [b]Cuphead UltraWide[/b]. This is the official BepInEx 5.4.23.5 x64 package - uploaded here so everything you need is in one place. You only need to install it once.
+
+[size=3][b]📦 Installation[/b][/size]
+[list=1]
+[*]Extract the zip into the game folder (the one with [b]Cuphead.exe[/b]), usually:
+[b]C:\Program Files (x86)\Steam\steamapps\common\Cuphead[/b]
+After extracting you should have [b]winhttp.dll[/b], [b]doorstop_config.ini[/b] and a [b]BepInEx[/b] folder next to Cuphead.exe.
+[*]Run the game once and close it. This creates the [b]BepInEx/plugins[/b] and [b]BepInEx/config[/b] folders.
+[*]Drop mod DLLs into [b]Cuphead/BepInEx/plugins/[/b]
+[/list]
+
+[b]Linux / Steam Deck (Proton):[/b] BepInEx needs the winhttp override to load. In Steam, right click Cuphead > Properties > Launch Options and set:
+[code]WINEDLLOVERRIDES="winhttp=n,b" %command%[/code]
+
+[size=3][b]Checking it works[/b][/size]
+After running the game once, [b]Cuphead/BepInEx/LogOutput.log[/b] should exist and list the loaded plugins. If it doesn't exist, BepInEx isn't loading - wrong folder, or missing launch option on Linux.
+
+[size=3][b]Updating old mods[/b][/size]
+BepInEx 5.4.23+ changed its Harmony library. Mods built for older BepInEx versions are loaded through a compatibility shim (you'll see a "Shimming..." warning in the log) and some may stop working. If a mod breaks after updating, look for a version rebuilt for BepInEx 5.4.23+.
+
+[size=3][b]Credits[/b][/size]
+BepInEx is developed by the BepInEx team and released under LGPL-2.1.
+Official project: [url=https://github.com/BepInEx/BepInEx]github.com/BepInEx/BepInEx[/url]
+
+[size=3][b]🧩 My other mods[/b][/size]
+[list]
+[*][url=https://www.nexusmods.com/cuphead/mods/115]Cuphead Double Assist[/url] - damage and health multipliers (2x-10x), infinite health/damage, in-game hotkeys and controller toggles
+[*][url=https://www.nexusmods.com/cuphead/mods/122]Cuphead UltraWide[/url] - removes the black side bars and renders the game at your monitor's aspect ratio, up to 21:9
+[/list]
+[url=https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods]All my mods[/url]
+
+[center][size=3][b]❤️ Support development[/b][/size]
+
+[url=https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD][img]https://raw.githubusercontent.com/nventatech-tech/cctop/main/contents/images/donate-qr.png[/img][/url]
+
+[url=https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD]Donate via PayPal[/url][/center]
+
+=== CHANGELOG (version 5.4.23.5) ===
+5.4.23.5 — Official BepInEx 5.4.23.5 x64 package, repacked as-is for Cuphead.

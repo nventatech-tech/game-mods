@@ -1,0 +1,53 @@
+=== MOD NAME (Nexus "Name" field) ===
+Cult of QoL PT-BR - Configuration Manager Translation
+
+=== SHORT SUMMARY (Nexus "Summary" field, max 250 chars) ===
+Traduz para português (BR) as opções do Cult of QoL Collection no Configuration Manager. Não altera o mod original - é um addon separado. / Translates the Cult of QoL Collection settings shown in Configuration Manager to Brazilian Portuguese.
+
+=== DESCRIPTION (Nexus "Description" field, BBCode) ===
+[size=4][b]Cult of QoL PT-BR - Configuration Manager Translation[/b][/size]
+
+[b]English:[/b] Standalone BepInEx addon that translates every [b]Cult of QoL Collection[/b] option shown in the Configuration Manager window to Brazilian Portuguese. It does not modify the original mod - remove it at any time to get the English texts back.
+
+[b]Português:[/b] Addon BepInEx separado que traduz para PT-BR todas as opções do [b]Cult of QoL Collection[/b] exibidas na janela do Configuration Manager (categorias, nomes e descrições). Não altera o mod original em nada - removeu o addon, voltam os textos em inglês.
+
+[size=3][b]✨ Como funciona / How it works[/b][/size]
+[list]
+[*]O addon carrega depois do CultOfQoL e substitui os textos registrados no Configuration Manager
+[*]Reaplica a tradução por alguns frames após o load para evitar corrida de carregamento entre plugins
+[*]Nenhum arquivo do jogo ou do CultOfQoL é modificado
+[/list]
+
+[size=3][b]📋 Requirements[/b][/size]
+[list]
+[*][url=https://www.nexusmods.com/cultofthelamb/mods/1]The Cult of QoL Collection[/url] (inclui o Configuration Manager / bundles Configuration Manager)
+[/list]
+
+[size=3][b]📦 Installation / Instalação[/b][/size]
+[list=1]
+[*]Instale o Cult of QoL Collection normalmente (com BepInEx e Configuration Manager)
+[*]Extraia o zip na pasta do jogo (ou instale com Vortex). O arquivo cai em:
+[code]Cult of the Lamb/BepInEx/plugins/CultOfQoL_PTBR.dll[/code]
+[*]Abra o jogo e o Configuration Manager ([b]F1[/b]) - as opções do CultOfQoL aparecem em PT-BR
+[/list]
+
+[size=3][b]Notes / Notas[/b][/size]
+[list]
+[*]Feito para a versão atual do Cult of QoL Collection - opções novas que ainda não tiverem tradução continuam em inglês
+[*]Se algo não aparecer traduzido, confira o [b]BepInEx/LogOutput.log[/b] e poste nos comentários
+[/list]
+
+[size=3][b]🧩 My other mods[/b][/size]
+[url=https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods]All my mods[/url]
+
+[center][size=3][b]❤️ Support development[/b][/size]
+
+[url=https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD][img]https://raw.githubusercontent.com/nventatech-tech/cctop/main/contents/images/donate-qr.png[/img][/url]
+
+[url=https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD]Donate via PayPal[/url][/center]
+
+=== CHANGELOG (version 1.0.1) ===
+1.0.1 — Tradução atualizada (pacote de strings mais recente) e zip agora com estrutura BepInEx/plugins para instalar direto na raiz do jogo ou via mod manager.
+
+=== CHANGELOG (version 1.0.0) ===
+1.0.0 — Lançamento inicial: tradução PT-BR das categorias, nomes e descrições do Cult of QoL Collection no Configuration Manager.
