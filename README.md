@@ -15,6 +15,8 @@ Source code for my published game mods.
 | [BepInEx for Cuphead](Cuphead/Bepinex) | Cuphead | pack | [173](https://www.nexusmods.com/cuphead/mods/173) |
 | [FindMyRide](CyberPunk/FindMyRide) | Cyberpunk 2077 | redscript | [31610](https://www.nexusmods.com/cyberpunk2077/mods/31610) |
 | [GiveMeEverything](CyberPunk/GiveMeEverything) | Cyberpunk 2077 | CET (Lua) | [31460](https://www.nexusmods.com/cyberpunk2077/mods/31460) |
+| [BestInSlot](CyberPunk/BestInSlot) | Cyberpunk 2077 | redscript | [31702](https://www.nexusmods.com/cyberpunk2077/mods/31702) |
+| [UnequipMods](CyberPunk/UnequipMods) | Cyberpunk 2077 | redscript | [31701](https://www.nexusmods.com/cyberpunk2077/mods/31701) |
 | [NineSolsPowerMod](NineSols/NineSolsPowerMod) | Nine Sols | BepInEx 5 | [16](https://www.nexusmods.com/ninesols/mods/16) |
 | [BepInEx pack for Nine Sols](NineSols/BepInExPack) | Nine Sols | pack | [17](https://www.nexusmods.com/ninesols/mods/17) |
 | [CultOfQoL_PTBR](CultOfTheLamb/CultOfQoL_PTBR) | Cult of the Lamb | BepInEx 5 | [84](https://www.nexusmods.com/cultofthelamb/mods/84) |
