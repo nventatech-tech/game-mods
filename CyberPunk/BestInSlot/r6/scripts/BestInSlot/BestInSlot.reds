@@ -39,8 +39,10 @@ public func BisIsRankable(item: ref<UIInventoryItem>) -> Bool {
   return item.IsClothing() && NotEquals(item.GetEquipmentArea(), gamedataEquipmentArea.Invalid);
 }
 
-// Grouping: weapons by type, clothes/cyberware by equipment slot, consumables/programs by type
+// Grouping: weapons by type, clothes by equipment slot, consumables/programs by type,
+// cyberware by slot + item type (mantis vs gorilla vs monowire etc. don't compete)
 public func BisGroupKey(item: ref<UIInventoryItem>) -> Int32 {
+  let key: Int32;
   if item.IsWeapon() {
     return EnumInt(item.GetItemType());
   };
@@ -48,7 +50,20 @@ public func BisGroupKey(item: ref<UIInventoryItem>) -> Int32 {
     return 10000 + EnumInt(item.GetEquipmentArea());
   };
   if item.IsAnyCyberware() {
-    return 20000 + EnumInt(item.GetEquipmentArea());
+    key = 100000 + EnumInt(item.GetEquipmentArea()) * 1000 + EnumInt(item.GetItemType());
+    // OS slot: deck/sande/berserk are build choices, rank each on its own
+    if Equals(item.GetEquipmentArea(), gamedataEquipmentArea.SystemReplacementCW) {
+      if item.IsCyberdeck() {
+        key += 1000000;
+      } else {
+        if Equals(TweakDBInterface.GetCName(ItemID.GetTDBID(item.GetID()) + t".cyberwareType", n"None"), n"Sandevistan") {
+          key += 2000000;
+        } else {
+          key += 3000000;
+        };
+      };
+    };
+    return key;
   };
   return 30000 + EnumInt(item.GetItemType());
 }
@@ -238,12 +253,22 @@ protected func RefreshUI() -> Void {
   this.BisUpdateBadgeLegacy();
 }
 
+// HUD hotkey slot and the radial wheel reuse this controller; badge there covers the icon
+@addMethod(InventoryItemDisplayController)
+private final func BisIsHudContext() -> Bool {
+  return Equals(this.m_itemDisplayContext, ItemDisplayContext.DPAD_RADIAL);
+}
+
 @addMethod(InventoryItemDisplayController)
 private final func BisUpdateBadgeLegacy() -> Void {
   let player: ref<PlayerPuppet>;
   let isBest: Bool;
   this.BisEnsureBadge();
   if !IsDefined(this.m_bisBadge) {
+    return;
+  };
+  if this.BisIsHudContext() {
+    this.m_bisBadge.SetVisible(false);
     return;
   };
   if !InventoryItemData.IsEmpty(this.m_itemData) {
@@ -259,6 +284,10 @@ private final func BisUpdateBadge(itemData: ref<UIInventoryItem>) -> Void {
   let isBest: Bool;
   this.BisEnsureBadge();
   if !IsDefined(this.m_bisBadge) {
+    return;
+  };
+  if this.BisIsHudContext() {
+    this.m_bisBadge.SetVisible(false);
     return;
   };
   if IsDefined(itemData) {
@@ -385,6 +414,18 @@ protected cb func OnInitialize() -> Bool {
   let result: Bool = wrappedMethod();
   if IsDefined(this.m_player) {
     this.m_player.BisRecompute();
+  };
+  return result;
+}
+
+// tela CIBERNETICA do menu e ripperdoc compartilham este controller; as celulas
+// (InventoryCyberwareDisplayController) ja passam pelos wraps de badge acima
+@wrapMethod(RipperDocGameController)
+protected cb func OnInitialize() -> Bool {
+  let result: Bool = wrappedMethod();
+  let player: ref<PlayerPuppet> = GetPlayer(GetGameInstance());
+  if IsDefined(player) {
+    player.BisRecompute();
   };
   return result;
 }
