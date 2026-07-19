@@ -74,6 +74,28 @@ local L = {
         on           = "ON",
         off          = "OFF",
         tabsearch    = "Search",
+        tabquests    = "Quests",
+        qcatmain     = "Main story",
+        qcatending   = "Affects ending",
+        qcatcosmetic = "Cosmetic",
+        qnopl        = "Phantom Liberty not detected - showing base game only.",
+        qactpro      = "Prologue",
+        qact1        = "Act 1",
+        qact2        = "Act 2",
+        qact3        = "Act 3 / Point of no return",
+        qactendings  = "Side jobs that change the ending",
+        qactside     = "Side jobs (cosmetic - no ending impact)",
+        qactpl       = "Phantom Liberty - Main story",
+        qactplside   = "Phantom Liberty - Side jobs",
+        qguide       = "Ending guide (reference)",
+        qdone        = "Done",
+        qactive      = "In progress",
+        qtodo        = "Not started",
+        qfailed      = "Failed",
+        qlocate      = "Locate",
+        qrefresh     = "Refresh",
+        qtracked     = "Now tracking this quest",
+        qreadfail    = "Could not read the journal. Load a save and hit Refresh.",
         favorites    = "Favorites",
         searchall    = "Search all items...",
         searchhint   = "Type to find any weapon, cyberware, clothing, mod or vehicle across every tab.",
@@ -213,6 +235,28 @@ local L = {
         on           = "LIGADO",
         off          = "DESLIGADO",
         tabsearch    = "Busca",
+        tabquests    = "Missões",
+        qcatmain     = "Principal",
+        qcatending   = "Afeta o final",
+        qcatcosmetic = "Secundária",
+        qnopl        = "Phantom Liberty não detectado - mostrando só o jogo base.",
+        qactpro      = "Prólogo",
+        qact1        = "Ato 1",
+        qact2        = "Ato 2",
+        qact3        = "Ato 3 / Ponto sem retorno",
+        qactendings  = "Secundárias que mudam o final",
+        qactside     = "Secundárias (cosméticas - não mudam o final)",
+        qactpl       = "Phantom Liberty - Principal",
+        qactplside   = "Phantom Liberty - Secundárias",
+        qguide       = "Guia por final (referência)",
+        qdone        = "Feitas",
+        qactive      = "Em andamento",
+        qtodo        = "Não iniciadas",
+        qfailed      = "Falhadas",
+        qlocate      = "Localizar",
+        qrefresh     = "Atualizar",
+        qtracked     = "Rastreando esta missão agora",
+        qreadfail    = "Não deu pra ler o diário. Carregue um save e clique Atualizar.",
         favorites    = "Favoritos",
         searchall    = "Buscar em tudo...",
         searchhint   = "Digite para achar qualquer arma, cyberware, roupa, mod ou veículo em todas as abas.",
@@ -823,11 +867,23 @@ local function healPlayer()
     end
 end
 
-local AMMO_QTY = { ammo1 = 500, ammo2 = 500, ammo3 = 200, ammo4 = 100 }
+local AMMO_QTY = { ammo1 = 9999, ammo2 = 9999, ammo3 = 9999, ammo4 = 9999 }
+local AMMO_MIN = 50 -- top up only when nearly empty; reserve caps below a few hundred, so a
+-- higher threshold would re-trigger every tick and spam the pickup toast
 
+-- GiveItem (not AddToInventory), and only when the stock is low, so infinite ammo doesn't
+-- spam the game's pickup toast every second.
 refillAmmoSilent = function()
+    local ts = Game.GetTransactionSystem()
+    local player = Game.GetPlayer()
+    if not ts or not player then return end
     for key, qty in pairs(AMMO_QTY) do
-        if items[key] then Game.AddToInventory(items[key], qty) end
+        if items[key] then
+            local id = ItemID.FromTDBID(TweakDBID.new(items[key]))
+            local have = 0
+            pcall(function() have = ts:GetItemQuantity(player, id) end)
+            if have < AMMO_MIN then ts:GiveItem(player, id, qty) end
+        end
     end
 end
 
@@ -1665,6 +1721,214 @@ local function drawSearchTab()
     end
 end
 
+-- Quest guide: static curated list separating real main story from side jobs that
+-- change the ending vs purely cosmetic ones. Read-only, no game-state query.
+local QCAT = {
+    main     = { key = "qcatmain",     r = 1.00, g = 0.82, b = 0.00 },
+    ending   = { key = "qcatending",   r = 0.00, g = 0.85, b = 0.85 },
+    cosmetic = { key = "qcatcosmetic", r = 0.62, g = 0.62, b = 0.64 },
+}
+
+-- live journal category tag: derived from each quest's journal path (folder = category).
+-- main_quest -> Principal; side_quest -> Cosmetica, except the ids below that gate/affect an
+-- ending or romance payoff -> Afeta o final; everything else (gigs, NCPD, minor) -> Cosmetica.
+local ENDING_SIDE_IDS = {
+    sq004_riders_on_the_storm = true, -- Panam -> The Star
+    sq031_rogue = true,               -- Chippin' In -> The Sun + secret ending
+    sq031_smack_my_bitch_up = true,   -- A Cool Metal Fire
+    sq031_cinema = true,              -- Blistering Love -> call Rogue
+    sq030_judy_romance = true,        -- Judy romance payoff
+    sq028_kerry_romance = true,       -- Kerry romance payoff
+    sq029_sobchak_romance = true,     -- River romance payoff
+    sq021_sick_dreams = true,         -- The Hunt (River)
+    sq011_kerry = true, sq017_kerry = true, sq011_concert = true, sq011_johnny = true,
+    sq017_02_lounge = true,           -- Kerry chain
+}
+-- base main story surfaces under quests/meta/ (Nocturne = meta/02_sickness), all main except
+-- these; PL and base sub-quests carry a real main_quest path.
+local META_COSMETIC = { ["07_nc_underground"] = true, ["08_headhunter"] = true }
+local function catFromPath(path)
+    if not path or path == "" then return nil end
+    if path:find("main_quest", 1, true) then return "main" end
+    local mid = path:match("/meta/([^/]+)")
+    if mid then return META_COSMETIC[mid] and "cosmetic" or "main" end
+    local sid = path:match("side_quest/([^/]+)")
+    if sid then return ENDING_SIDE_IDS[sid] and "ending" or "cosmetic" end
+    return "cosmetic"
+end
+
+-- Phantom Liberty detection: PL-only content (ep1-scoped) resolves only when the expansion
+-- is installed. Two independent signals; either hit => PL present (ep1 naming rules out a
+-- base-game false positive). If both miss on a PL install, it's a wrong id, not a wrong method.
+local PL_DETECT_RECORD = "Vehicle.v_standard2_archer_hella_ep1_kurtz"
+local PL_DETECT_RESOURCE = "ep1\\vehicles\\special\\av_militech_manticore_fake_trama.ent"
+local plCache
+local function hasPL()
+    if plCache == nil then
+        local ok, hit = pcall(function()
+            if TweakDB:GetRecord(PL_DETECT_RECORD) ~= nil then return true end
+            local depot = Game.GetResourceDepot()
+            return depot ~= nil and depot:ResourceExists(PL_DETECT_RESOURCE)
+        end)
+        plCache = ok and hit == true
+    end
+    return plCache
+end
+
+local function qnote(q)
+    if type(q.note) == "table" then return q.note[settings.lang] or q.note.en or "" end
+    return q.note or ""
+end
+
+-- live journal: real quests read from the game (pt-BR names, completion state, locate).
+local QSTATE = {
+    { key = "qdone",   val = 3, r = 0.30, g = 0.85, b = 0.35 },
+    { key = "qactive", val = 2, r = 1.00, g = 0.82, b = 0.00 },
+    { key = "qtodo",   val = 1, r = 0.62, g = 0.62, b = 0.64 },
+    { key = "qfailed", val = 4, r = 0.90, g = 0.35, b = 0.30 },
+}
+local qsShow = { [3] = true, [2] = true, [1] = true, [4] = false }
+local questCache
+
+local function fetchQuests()
+    local jm = Game.GetJournalManager()
+    if not jm then return nil end
+    local ok, quests = pcall(function()
+        local ctx = JournalRequestContext.new({
+            stateFilter = JournalRequestStateFilter.new({
+                inactive = true, active = true, succeeded = true, failed = true,
+            }),
+        })
+        return jm:GetQuests(ctx)
+    end)
+    if not ok or not quests then return nil end
+    return jm, quests
+end
+
+-- GetEntryState returns a gameJournalEntryState enum; compare against the global enum
+-- values (the proven pattern from real mods) since .value isn't reliable across builds.
+local function stateNum(es)
+    if es == nil then return 0 end
+    if es == gameJournalEntryState.Succeeded then return 3 end
+    if es == gameJournalEntryState.Active then return 2 end
+    if es == gameJournalEntryState.Inactive then return 1 end
+    if es == gameJournalEntryState.Failed then return 4 end
+    if type(es) == "number" then return es end
+    local ok, v = pcall(function() return es.value end)
+    return (ok and type(v) == "number") and v or 0
+end
+
+local function entryId(e)
+    local id = ""
+    pcall(function()
+        local v = e.id
+        if type(v) == "string" then id = v elseif v ~= nil then id = tostring(v.value or v) end
+    end)
+    return id
+end
+
+-- reconstruct a quest's journal path by walking parents, for the category tag
+local function questPath(jm, entry)
+    local parts, e, guard = {}, entry, 0
+    while e ~= nil and guard < 20 do
+        local id = entryId(e)
+        if id == "" then break end
+        table.insert(parts, 1, id)
+        local parent
+        pcall(function() parent = jm:GetParentEntry(e) end)
+        e = parent
+        guard = guard + 1
+    end
+    return table.concat(parts, "/")
+end
+
+local function buildQuestList()
+    local out = {}
+    local jm, quests = fetchQuests()
+    if not jm then return out end
+    for _, q in ipairs(quests) do
+        local name, st = "?", 0
+        pcall(function() name = GetLocalizedText(q:GetTitle(jm)) end)
+        if name == nil or name == "" then name = "?" end
+        pcall(function() st = stateNum(jm:GetEntryState(q)) end)
+        local cat
+        pcall(function() cat = catFromPath(questPath(jm, q)) end)
+        out[#out + 1] = { name = name, entry = q, state = st, cat = cat }
+    end
+    table.sort(out, function(a, b) return a.name < b.name end)
+    return out
+end
+
+local function locateQuest(entry)
+    local ok = pcall(function() Game.GetJournalManager():TrackEntry(entry) end)
+    notify(ok and t("qtracked") or t("failed"))
+end
+
+local qcatShow = { main = true, ending = true, cosmetic = true }
+local CAT_ORDER = { "main", "ending", "cosmetic" }
+local function stateMeta(val)
+    for _, s in ipairs(QSTATE) do if s.val == val then return s end end
+    return QSTATE[3]
+end
+
+-- one unified list: grouped by category (Principal/Afeta o final/Cosmetica); each row is
+-- colored by its live state and shows the state word; Localizar on anything not done.
+local function drawQuestsTab()
+    ImGui.SetNextItemWidth(260)
+    local text, changed = ImGui.InputTextWithHint("##qsearch", t("search"), filters.q or "", 64)
+    if changed then filters.q = text end
+    local needle = (filters.q or ""):lower()
+    ImGui.SameLine()
+    if ImGui.Button(t("qrefresh")) then questCache = nil end
+    for i, c in ipairs(CAT_ORDER) do
+        if i > 1 then ImGui.SameLine() end
+        local q = QCAT[c]
+        local v, ch = ImGui.Checkbox("##qc" .. c, qcatShow[c])
+        if ch then qcatShow[c] = v end
+        ImGui.SameLine()
+        ImGui.TextColored(q.r, q.g, q.b, 1.0, t(q.key))
+    end
+    for i, s in ipairs(QSTATE) do
+        if i > 1 then ImGui.SameLine() end
+        local v, ch = ImGui.Checkbox("##qs" .. s.val, qsShow[s.val])
+        if ch then qsShow[s.val] = v end
+        ImGui.SameLine()
+        ImGui.TextColored(s.r, s.g, s.b, 1.0, t(s.key))
+    end
+    if not hasPL() then ImGui.TextWrapped(t("qnopl")) end
+    ImGui.Separator()
+
+    if questCache == nil or #questCache == 0 then questCache = buildQuestList() end
+    if #questCache == 0 then ImGui.TextWrapped(t("qreadfail")); return end
+
+    for _, c in ipairs(CAT_ORDER) do
+        if qcatShow[c] then
+            local rows = {}
+            for i, q in ipairs(questCache) do
+                if q.cat == c and qsShow[q.state]
+                    and (needle == "" or q.name:lower():find(needle, 1, true)) then
+                    rows[#rows + 1] = { q = q, i = i }
+                end
+            end
+            if #rows > 0 then
+                local cc = QCAT[c]
+                if ImGui.CollapsingHeader(t(cc.key) .. " (" .. #rows .. ")", OPEN) then
+                    for _, e in ipairs(rows) do
+                        local sm = stateMeta(e.q.state)
+                        if e.q.state ~= 3 then
+                            if ImGui.Button(t("qlocate") .. "##ql" .. e.i) then locateQuest(e.q.entry) end
+                            ImGui.SameLine()
+                        end
+                        ImGui.TextColored(sm.r, sm.g, sm.b, 1.0, e.q.name)
+                        ImGui.SameLine()
+                        ImGui.TextDisabled(t(sm.key))
+                    end
+                end
+            end
+        end
+    end
+end
+
 -- cyberpunk-ish look: yellow accents, teal headers, angular corners; only this window
 local function pushTheme()
     ImGui.PushStyleColor(ImGuiCol.WindowBg,        0.07, 0.07, 0.05, 0.97)
@@ -1755,6 +2019,10 @@ registerForEvent("onDraw", function()
         end
         if ImGui.BeginTabItem(t("tabunlocks")) then
             drawUnlocksTab()
+            ImGui.EndTabItem()
+        end
+        if ImGui.BeginTabItem(t("tabquests")) then
+            drawQuestsTab()
             ImGui.EndTabItem()
         end
         ImGui.EndTabBar()
