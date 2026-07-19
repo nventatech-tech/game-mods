@@ -25,8 +25,11 @@ local L = {
         unlocked     = "Unlocked",
         romunlocked  = "romance unlocked",
         vehicles     = "Vehicles",
-        unlockveh    = "Unlock all purchasable vehicles",
-        vehunlocked  = "All vehicles unlocked",
+        unlockveh    = "Unlock ALL vehicles",
+        vall         = "All vehicles",
+        vehwarn      = "Unlock vehicles to call them from your phone. \"Unlock ALL\" grabs every one; the list below unlocks them one by one.",
+        unlockbtn    = "Unlock",
+        vehdone      = "unlocked",
         failed       = "failed (check the log)",
         tabitems     = "Items",
         tabprog      = "Progression",
@@ -62,6 +65,24 @@ local L = {
         healed       = "Healed",
         ammofull     = "Ammo refilled",
         heal         = "Full heal",
+        godmode      = "God mode / toggles",
+        tgod         = "Invincibility (HP kept full)",
+        tstamina     = "Infinite stamina",
+        tinfammo     = "Infinite ammo",
+        toneshot     = "Massive damage (one-shot)",
+        godhint      = "Toggles stay on across saves. Invincibility holds HP at max each frame - near-immortal, a single huge hit can still register.",
+        on           = "ON",
+        off          = "OFF",
+        tabsearch    = "Search",
+        favorites    = "Favorites",
+        searchall    = "Search all items...",
+        searchhint   = "Type to find any weapon, cyberware, clothing, mod or vehicle across every tab.",
+        addfav       = "+fav",
+        rmfav        = "-fav",
+        undo         = "Undo last give",
+        undonone     = "Nothing to undo",
+        undodone     = "Undone",
+        undofail     = "Undo failed",
         dmgmult      = "Damage multiplier",
         dmgmulthint  = "Multiplies all damage you deal, quickhacks included. 1x = off.",
         perkreset    = "Perk reset shard",
@@ -87,6 +108,19 @@ local L = {
         areafeet     = "Shoes",
         areaoutfit   = "Outfits",
         areaother    = "Other",
+        tcaw         = "All cyberware",
+        cawall       = "Give ALL cyberware",
+        cawwarn      = "Every cyberware in the game. More than V's capacity can hold - extras sit in the inventory until equipped.",
+        cfront       = "Frontal Cortex",
+        cos          = "Operating System",
+        cface        = "Face",
+        ccirc        = "Circulatory System",
+        cnerv        = "Nervous System",
+        cinteg       = "Skin",
+        chand        = "Hands",
+        carm         = "Arms",
+        cskel        = "Skeleton",
+        cleg         = "Legs",
         taballweapons = "All weapons",
         weapall      = "Give ALL weapons",
         weapwarn     = "Warning: taking every weapon will also leave V heavily overweight.",
@@ -130,8 +164,11 @@ local L = {
         unlocked     = "Desbloqueado",
         romunlocked  = "romance desbloqueado",
         vehicles     = "Veículos",
-        unlockveh    = "Desbloquear todos os veículos compráveis",
-        vehunlocked  = "Todos os veículos desbloqueados",
+        unlockveh    = "Desbloquear TODOS os veículos",
+        vall         = "Todos os veículos",
+        vehwarn      = "Desbloqueie veículos para chamá-los pelo celular. \"Desbloquear TODOS\" pega todos de uma vez; a lista abaixo desbloqueia um por um.",
+        unlockbtn    = "Desbloquear",
+        vehdone      = "desbloqueado",
         failed       = "falhou (veja o log)",
         tabitems     = "Itens",
         tabprog      = "Progressão",
@@ -167,6 +204,24 @@ local L = {
         healed       = "Curado",
         ammofull     = "Munição cheia",
         heal         = "Curar 100%",
+        godmode      = "God mode / toggles",
+        tgod         = "Invencibilidade (HP sempre cheio)",
+        tstamina     = "Stamina infinita",
+        tinfammo     = "Munição infinita",
+        toneshot     = "Dano massivo (one-shot)",
+        godhint      = "Os toggles ficam ligados entre saves. Invencibilidade trava o HP no máximo a cada frame - quase imortal, um dano único enorme ainda pode registrar.",
+        on           = "LIGADO",
+        off          = "DESLIGADO",
+        tabsearch    = "Busca",
+        favorites    = "Favoritos",
+        searchall    = "Buscar em tudo...",
+        searchhint   = "Digite para achar qualquer arma, cyberware, roupa, mod ou veículo em todas as abas.",
+        addfav       = "+fav",
+        rmfav        = "-fav",
+        undo         = "Desfazer último",
+        undonone     = "Nada para desfazer",
+        undodone     = "Desfeito",
+        undofail     = "Falha ao desfazer",
         dmgmult      = "Multiplicador de dano",
         dmgmulthint  = "Multiplica todo dano causado, quickhacks incluídos. 1x = desligado.",
         perkreset    = "Shard de reset de perks",
@@ -188,6 +243,19 @@ local L = {
         areafeet     = "Sapatos",
         areaoutfit   = "Conjuntos",
         areaother    = "Outros",
+        tcaw         = "Cyberware (todos)",
+        cawall       = "Dar TODOS os cyberware",
+        cawwarn      = "Todo cyberware do jogo. Passa da capacidade de V - o excedente fica no inventário até ser equipado.",
+        cfront       = "Córtex Frontal",
+        cos          = "Sistema Operacional",
+        cface        = "Rosto",
+        ccirc        = "Sistema Circulatório",
+        cnerv        = "Sistema Nervoso",
+        cinteg       = "Pele",
+        chand        = "Mãos",
+        carm         = "Braços",
+        cskel        = "Esqueleto",
+        cleg         = "Pernas",
         taballweapons = "Armas (todas)",
         weapall      = "Dar TODAS as armas",
         weapwarn     = "Aviso: pegar todas as armas também deixa V com excesso de peso.",
@@ -214,7 +282,8 @@ local L = {
 }
 
 -- settings.json holds lang + multipliers; lang.txt kept as read-only fallback (pre-1.2.0)
-local settings = { lang = "en", xpmult = 1, dmgmult = 1, carrybonus = 0 }
+local settings = { lang = "en", xpmult = 1, dmgmult = 1, carrybonus = 0,
+    god = false, stamina = false, infammo = false, oneshot = false, favorites = {} }
 
 local function t(key) return L[settings.lang][key] or L.en[key] or key end
 
@@ -240,6 +309,18 @@ local function loadSettings()
             if d and d >= 1 and d <= 10 then settings.dmgmult = math.floor(d) end
             local c = tonumber(saved.carrybonus)
             if c and c >= 0 and c <= 50000 then settings.carrybonus = math.floor(c) end
+            settings.god = saved.god == true
+            settings.stamina = saved.stamina == true
+            settings.infammo = saved.infammo == true
+            settings.oneshot = saved.oneshot == true
+            if type(saved.favorites) == "table" then
+                settings.favorites = {}
+                for _, f in ipairs(saved.favorites) do
+                    if type(f) == "table" and type(f.src) == "string" and type(f.label) == "string" then
+                        settings.favorites[#settings.favorites + 1] = { src = f.src, label = f.label, id = f.id }
+                    end
+                end
+            end
         end
         return
     end
@@ -492,7 +573,14 @@ local GEAR = {
 -- player isn't queryable yet, so reapply retries via onUpdate until Game.GetPlayer() works.
 local dmgMod = nil
 local carryMod = nil
+local osMod = nil
 local statPending = 0
+local ONESHOT_VALUE = 100000  -- +100000x damage: kills anything short of a scripted-invuln target
+-- forward-declared: the onUpdate toggle loop (below) closes over these before they're assigned
+local setPool, refillAmmoSilent
+-- undo tracks only the last single item give (points/XP/unlocks/vehicles can't be undone);
+-- each item give stores an undo closure, bulk gives clear it
+local lastGive = nil
 
 -- shared shape for the damage and carry-capacity modifiers: drop old handle, add if enabled
 local function applyStatMod(handle, statType, enabled, value)
@@ -522,6 +610,11 @@ end
 local function applyCarryBonus()
     carryMod = applyStatMod(carryMod, gamedataStatType.CarryCapacity,
         settings.carrybonus > 0, settings.carrybonus)
+end
+
+local function applyOneShot()
+    osMod = applyStatMod(osMod, gamedataStatType.AllDamageDonePercentBonus,
+        settings.oneshot, ONESHOT_VALUE)
 end
 
 -- follow the game's on-screen language: pt-* = Portuguese, anything else = English
@@ -596,13 +689,15 @@ registerForEvent("onInit", function()
     Observe("PlayerPuppet", "OnGameAttached", function()
         dmgMod = nil  -- old handles died with the previous player entity
         carryMod = nil
-        if settings.dmgmult > 1 or settings.carrybonus > 0 then statPending = 2.0 end
+        osMod = nil
+        if settings.dmgmult > 1 or settings.carrybonus > 0 or settings.oneshot then statPending = 2.0 end
     end)
 
     -- CET reloaded mid-session: no OnGameAttached will come, apply on the running player
-    if settings.dmgmult > 1 or settings.carrybonus > 0 then statPending = 2.0 end
+    if settings.dmgmult > 1 or settings.carrybonus > 0 or settings.oneshot then statPending = 2.0 end
 end)
 
+local ammoAcc = 0
 registerForEvent("onUpdate", function(dt)
     if statPending > 0 then
         statPending = statPending - dt
@@ -610,8 +705,20 @@ registerForEvent("onUpdate", function(dt)
             if Game.GetPlayer() then
                 applyDmgMult()
                 applyCarryBonus()
+                applyOneShot()
             else
                 statPending = 1.0  -- player not up yet (main menu / still loading), try again
+            end
+        end
+    end
+    -- god/stamina/infammo are held by re-setting each frame, so they resume on their own after a reload
+    if settings.god or settings.stamina or settings.infammo then
+        if Game.GetPlayer() then
+            if settings.god then pcall(setPool, "Health") end
+            if settings.stamina then pcall(setPool, "Stamina") end
+            if settings.infammo then
+                ammoAcc = ammoAcc + dt
+                if ammoAcc >= 1.0 then ammoAcc = 0; pcall(refillAmmoSilent) end
             end
         end
     end
@@ -620,6 +727,9 @@ end)
 local function addItem(id, qty, label)
     Game.AddToInventory(id, qty)
     notify("+" .. qty .. " " .. label)
+    lastGive = { label = qty .. " " .. label, undo = function()
+        Game.GetTransactionSystem():RemoveItem(Game.GetPlayer(), ItemID.FromTDBID(TweakDBID.new(id)), qty)
+    end }
 end
 
 local function removeItem(id, qty, label)
@@ -688,10 +798,13 @@ local function giveWeapon(w)
     Game.AddToInventory(w.id, 1)
     ownedCache[w.id] = true
     notify("+1 " .. w.label)
+    lastGive = { label = w.label, undo = function()
+        Game.GetTransactionSystem():RemoveItem(Game.GetPlayer(), ItemID.FromTDBID(TweakDBID.new(w.id)), 1)
+    end }
 end
 
 -- value 100 = percent of max (same call/flags EasyTrainers uses)
-local function setPool(pool)
+setPool = function(pool)
     Game.GetStatPoolsSystem():RequestSettingStatPoolValue(
         Game.GetPlayer():GetEntityID(), gamedataStatPoolType[pool], 100, Game.GetPlayer(), true, true)
 end
@@ -712,10 +825,14 @@ end
 
 local AMMO_QTY = { ammo1 = 500, ammo2 = 500, ammo3 = 200, ammo4 = 100 }
 
-local function refillAmmo()
+refillAmmoSilent = function()
     for key, qty in pairs(AMMO_QTY) do
         if items[key] then Game.AddToInventory(items[key], qty) end
     end
+end
+
+local function refillAmmo()
+    refillAmmoSilent()
     notify(t("ammofull"))
 end
 
@@ -732,8 +849,22 @@ local function clearWanted()
     end
 end
 
+local function undoLast()
+    if not lastGive then notify(t("undonone")); return end
+    local label = lastGive.label
+    local ok, err = pcall(lastGive.undo)
+    if ok then
+        notify(t("undodone") .. ": " .. label)
+        lastGive = nil
+    else
+        notify(t("undofail"))
+        spdlog.info("GiveMeEverything: undo failed: " .. tostring(err))
+    end
+end
+
 -- the mod's namesake: money, all components, consumables, ammo, every weapon and gear piece
 local function giveEverything()
+    lastGive = nil  -- bulk give: nothing single to undo
     Game.AddToInventory("Items.money", 10000000)
     local qtys = {
         comp1 = 1000, comp2 = 1000, comp3 = 1000, comp4 = 1000, comp5 = 1000,
@@ -764,6 +895,18 @@ end
 registerHotkey("GME_Heal", "Full heal (HP/stamina/RAM)", healPlayer)
 registerHotkey("GME_Ammo", "Refill ammo", refillAmmo)
 registerHotkey("GME_ClearWanted", "Clear NCPD wanted level", clearWanted)
+
+local function toggle(key, labelKey)
+    settings[key] = not settings[key]
+    if key == "oneshot" then applyOneShot() end
+    saveSettings()
+    notify(t(labelKey) .. ": " .. (settings[key] and t("on") or t("off")))
+end
+registerHotkey("GME_GodMode", "Toggle invincibility", function() toggle("god", "tgod") end)
+registerHotkey("GME_InfStamina", "Toggle infinite stamina", function() toggle("stamina", "tstamina") end)
+registerHotkey("GME_InfAmmo", "Toggle infinite ammo", function() toggle("infammo", "tinfammo") end)
+registerHotkey("GME_OneShot", "Toggle massive damage", function() toggle("oneshot", "toneshot") end)
+registerHotkey("GME_Undo", "Undo last item give", function() undoLast() end)
 
 local COL = 170  -- label column width; buttons align after it
 local customQty = 0  -- when > 0, every item row gets an extra +custom button
@@ -842,6 +985,7 @@ local sellDuplicates  -- defined after QUALITY_RANK, used by the Items tab below
 
 local function drawItemsTab()
     if ImGui.Button("GIVE ME EVERYTHING", -1, 32) then giveEverything() end
+    if ImGui.Button(t("undo")) then undoLast() end
     customQtyRow()
     ImGui.Separator()
     if ImGui.CollapsingHeader(t("money"), OPEN) then
@@ -874,6 +1018,18 @@ local function drawItemsTab()
 end
 
 local function drawConsumTab()
+    if ImGui.CollapsingHeader(t("godmode"), OPEN) then
+        local v, c
+        v, c = ImGui.Checkbox(t("tgod"), settings.god)
+        if c then settings.god = v; saveSettings() end
+        v, c = ImGui.Checkbox(t("tstamina"), settings.stamina)
+        if c then settings.stamina = v; saveSettings() end
+        v, c = ImGui.Checkbox(t("tinfammo"), settings.infammo)
+        if c then settings.infammo = v; saveSettings() end
+        v, c = ImGui.Checkbox(t("toneshot"), settings.oneshot)
+        if c then settings.oneshot = v; applyOneShot(); saveSettings() end
+        ImGui.TextWrapped(t("godhint"))
+    end
     if ImGui.CollapsingHeader(t("healhdr"), OPEN) then
         itemRow("MaxDoc", "maxdoc", 20)
         itemRow("Bounce Back", "bounce", 20)
@@ -1027,6 +1183,38 @@ local CLOTH_GROUPS = {
             Legs = "arealegs", Feet = "areafeet", Outfit = "areaoutfit" },
     typeOf = function(rec) return rec:EquipArea():Type().value end,
 }
+-- all cyberware from gamedataItem_Record, grouped by cyberware EquipArea slot.
+-- arm cyberware (Mantis/Gorilla/etc.) are weapon records, so they stay in the weapons tab, not here.
+-- inclusion keys off the "*CW" EquipArea suffix, not exact enum names: a mis-mapped slot lands
+-- in Other instead of vanishing, so no cyberware is ever silently dropped.
+local CYBER_GROUPS = {
+    order = { "cfront", "cos", "carm", "cface", "cskel", "chand", "cnerv", "ccirc", "cinteg", "cleg", "areaother" },
+    map = {
+        FrontalCortexCW = "cfront", SystemReplacementCW = "cos", ArmsCW = "carm",
+        EyesCW = "cface", SkeletonCW = "cskel", HandsCW = "chand",
+        NervousSystemCW = "cnerv", CardiovascularSystemCW = "ccirc",
+        IntegumentarySystemCW = "cinteg", LegsCW = "cleg",
+    },
+    typeOf = function(rec) return rec:EquipArea():Type().value end,
+    skip = function(tv) return tv == nil or tv:find("CW$") == nil end,
+    dedupe = true,
+}
+-- vehicles aren't inventory items: unlock via VehicleSystem so they appear in the phone call list.
+-- ~500 vehicle records include every traffic/NPC variant; dedupe by display name collapses them to
+-- the unique models. Per-record unlock passes the record TweakDBID; "all" uses the native bulk call.
+local function unlockVehicle(c)
+    pcall(function() Game.GetVehicleSystem():EnablePlayerVehicle(c.id, true, false) end)
+end
+local VEH_GROUPS = {
+    order = { "vall" },
+    map = { V = "vall" },
+    typeOf = function() return "V" end,
+    dedupe = true,
+    give = unlockVehicle,
+    btnKey = "unlockbtn",
+    doneKey = "vehdone",
+    allAction = function() pcall(function() Game.GetVehicleSystem():EnableAllPlayerVehicles() end) end,
+}
 local WEAPON_GROUPS = {
     order = { "wpistols", "wsmgs", "wrifles", "wshotguns", "wlmg", "wsnipers", "wmelee", "wcyber", "areaother" },
     map = {
@@ -1093,7 +1281,7 @@ local function buildDynList(key, recordTypes, def)
                     if def.strict then return end
                     g = "areaother"
                 end
-                local entry = { label = name, id = rec:GetID() }
+                local entry = { label = name, id = rec:GetID(), give = def.give, btnKey = def.btnKey, doneKey = def.doneKey }
                 if def.dedupe then
                     local rank = 0
                     pcall(function() rank = QUALITY_RANK[rec:Quality():Name().value] or 0 end)
@@ -1120,19 +1308,26 @@ local function buildDynList(key, recordTypes, def)
         total = total + #list
         table.sort(list, function(a, b) return a.label < b.label end)
     end
-    dynLists[key] = { groups = groups, total = total, order = def.order }
+    dynLists[key] = { groups = groups, total = total, order = def.order, allAction = def.allAction }
     return dynLists[key]
 end
 
+-- default action gives the item; lists can override with def.give (e.g. vehicles unlock instead)
 local function giveDynItem(c)
-    Game.GetTransactionSystem():GiveItem(Game.GetPlayer(), ItemID.FromTDBID(c.id), 1)
+    if c.give then c.give(c)
+    else
+        Game.GetTransactionSystem():GiveItem(Game.GetPlayer(), ItemID.FromTDBID(c.id), 1)
+        lastGive = { label = c.label, undo = function()
+            Game.GetTransactionSystem():RemoveItem(Game.GetPlayer(), ItemID.FromTDBID(c.id), 1)
+        end }
+    end
 end
 
 -- button first, then label: long pt-BR names were sliding under a right-aligned button
 local function dynRow(c, uid)
-    if ImGui.Button(t("give") .. "##d" .. uid) then
+    if ImGui.Button(t(c.btnKey or "give") .. "##d" .. uid) then
         giveDynItem(c)
-        notify("+1 " .. c.label)
+        notify(c.doneKey and (c.label .. " " .. t(c.doneKey)) or ("+1 " .. c.label))
     end
     ImGui.SameLine()
     ImGui.Text(c.label)
@@ -1141,14 +1336,20 @@ end
 local function drawDynTab(id, data, allLabel, warnText)
     ImGui.TextWrapped(warnText)
     if ImGui.Button(allLabel .. " (" .. data.total .. ")", -1, 28) then
-        local n = 0
-        for _, list in pairs(data.groups) do
-            for _, c in ipairs(list) do
-                giveDynItem(c)
-                n = n + 1
+        if data.allAction then
+            data.allAction()
+            notify(allLabel)
+        else
+            local n = 0
+            for _, list in pairs(data.groups) do
+                for _, c in ipairs(list) do
+                    giveDynItem(c)
+                    n = n + 1
+                end
             end
+            lastGive = nil
+            notify("+" .. n .. " " .. t("itemsgiven"))
         end
-        notify("+" .. n .. " " .. t("itemsgiven"))
     end
     ImGui.Separator()
     ImGui.SetNextItemWidth(220)
@@ -1175,6 +1376,7 @@ local function drawDynTab(id, data, allLabel, warnText)
             if ImGui.CollapsingHeader(t(g) .. " (" .. #list .. ")##" .. id .. g) then
                 if ImGui.Button(t("giveall") .. "##" .. id .. g) then
                     for _, c in ipairs(list) do giveDynItem(c) end
+                    lastGive = nil
                     notify("+" .. #list .. " " .. t("itemsgiven"))
                 end
                 for i, c in ipairs(list) do dynRow(c, id .. g .. i) end
@@ -1333,22 +1535,133 @@ local function drawUnlocksTab()
         romanceRow("River", "river_romanceable")
         romanceRow("Kerry", "kerry_romanceable")
     end
-    if ImGui.CollapsingHeader(t("vehicles"), OPEN) then
-        if ImGui.Button(t("unlockveh")) then
-            local ok, err = pcall(function() Game.GetVehicleSystem():EnableAllPlayerVehicles() end)
-            if ok then
-                notify(t("vehunlocked"))
-            else
-                notify(t("vehicles") .. " " .. t("failed"))
-                spdlog.info("GiveMeEverything: EnableAllPlayerVehicles failed: " .. tostring(err))
-            end
-        end
-    end
     if ImGui.CollapsingHeader(t("recipes"), OPEN) then
         if ImGui.Button(t("recipesall")) then unlockAllRecipes() end
     end
     if ImGui.CollapsingHeader(t("ncpd"), OPEN) then
         drawNcpdSection()
+    end
+end
+
+-- global search + favorites: dynamic sources are rebuilt on demand and matched by name.
+-- favorites store only {src, label} (+ id for static string-id sources) so they survive a
+-- restart despite record TweakDBIDs not being serializable; the give is resolved at click time.
+local SRC_DEF = {
+    aw  = { "gamedataWeaponItem_Record", WEAPON_GROUPS },
+    c   = { "gamedataClothing_Record", CLOTH_GROUPS },
+    cyb = { "gamedataItem_Record", CYBER_GROUPS },
+    m   = { { "gamedataAttachment_Record", "gamedataItem_Record" }, MODS_GROUPS },
+    veh = { "gamedataVehicle_Record", VEH_GROUPS },
+}
+
+local function searchAll(needle)
+    local results = {}
+    for src, d in pairs(SRC_DEF) do
+        local data = buildDynList(src, d[1], d[2])
+        for _, list in pairs(data.groups) do
+            for _, c in ipairs(list) do
+                if c.label:lower():find(needle, 1, true) then
+                    results[#results + 1] = { label = c.label, entry = c, src = src }
+                end
+            end
+        end
+    end
+    for _, list in ipairs({ WEAPONS, GEAR }) do
+        for _, group in ipairs(list) do
+            for _, w in ipairs(group.weapons) do
+                if w.id and w.label:lower():find(needle, 1, true) then
+                    results[#results + 1] = { label = w.label, id = w.id, src = "static" }
+                end
+            end
+        end
+    end
+    table.sort(results, function(a, b) return a.label < b.label end)
+    return results
+end
+
+local function isFav(src, label)
+    for _, f in ipairs(settings.favorites) do
+        if f.src == src and f.label == label then return true end
+    end
+    return false
+end
+
+local function toggleFav(src, label, id)
+    for i, f in ipairs(settings.favorites) do
+        if f.src == src and f.label == label then
+            table.remove(settings.favorites, i); saveSettings(); return
+        end
+    end
+    settings.favorites[#settings.favorites + 1] = { src = src, label = label, id = id }
+    saveSettings()
+end
+
+local function giveStatic(id, label)
+    Game.AddToInventory(id, 1)
+    lastGive = { label = label, undo = function()
+        Game.GetTransactionSystem():RemoveItem(Game.GetPlayer(), ItemID.FromTDBID(TweakDBID.new(id)), 1)
+    end }
+    notify("+1 " .. label)
+end
+
+local function giveResult(r)
+    if r.src == "static" then
+        giveStatic(r.id, r.label)
+    else
+        giveDynItem(r.entry)
+        notify(r.entry.give and (r.label .. " " .. t("vehdone")) or ("+1 " .. r.label))
+    end
+end
+
+local function giveFav(f)
+    if f.src == "static" then
+        giveStatic(f.id, f.label)
+        return
+    end
+    local d = SRC_DEF[f.src]
+    if not d then return end
+    local data = buildDynList(f.src, d[1], d[2])
+    for _, list in pairs(data.groups) do
+        for _, c in ipairs(list) do
+            if c.label == f.label then
+                giveDynItem(c)
+                notify(c.give and (c.label .. " " .. t("vehdone")) or ("+1 " .. c.label))
+                return
+            end
+        end
+    end
+    notify(f.label .. " " .. t("failed"))
+end
+
+local function drawSearchTab()
+    if #settings.favorites > 0 and ImGui.CollapsingHeader(t("favorites") .. " (" .. #settings.favorites .. ")", OPEN) then
+        for i = #settings.favorites, 1, -1 do
+            local f = settings.favorites[i]
+            if ImGui.Button(t("give") .. "##fg" .. i) then giveFav(f) end
+            ImGui.SameLine()
+            if ImGui.Button(t("rmfav") .. "##fx" .. i) then toggleFav(f.src, f.label) end
+            ImGui.SameLine()
+            ImGui.Text(f.label)
+        end
+        ImGui.Separator()
+    end
+    ImGui.SetNextItemWidth(260)
+    local text, changed = ImGui.InputTextWithHint("##gsearch", t("searchall"), filters.g or "", 64)
+    if changed then filters.g = text end
+    local needle = (filters.g or ""):lower()
+    if needle == "" then ImGui.TextWrapped(t("searchhint")); return end
+    local results = searchAll(needle)
+    if #results == 0 then ImGui.Text(t("noresults")); return end
+    for i, r in ipairs(results) do
+        if i > 300 then break end
+        if ImGui.Button(t("give") .. "##g" .. i) then giveResult(r) end
+        ImGui.SameLine()
+        local fav = isFav(r.src, r.label)
+        if ImGui.Button((fav and t("rmfav") or t("addfav")) .. "##gs" .. i) then
+            toggleFav(r.src, r.label, r.id)
+        end
+        ImGui.SameLine()
+        ImGui.Text(r.label)
     end
 end
 
@@ -1392,6 +1705,10 @@ registerForEvent("onDraw", function()
     end
 
     if ImGui.BeginTabBar("##gmetabs") then
+        if ImGui.BeginTabItem(t("tabsearch")) then
+            drawSearchTab()
+            ImGui.EndTabItem()
+        end
         if ImGui.BeginTabItem(t("tabitems")) then
             drawItemsTab()
             ImGui.EndTabItem()
@@ -1422,6 +1739,14 @@ registerForEvent("onDraw", function()
         end
         if ImGui.BeginTabItem(t("tabclothes")) then
             drawDynTab("c", buildDynList("c", "gamedataClothing_Record", CLOTH_GROUPS), t("clothall"), t("clothwarn"))
+            ImGui.EndTabItem()
+        end
+        if ImGui.BeginTabItem(t("tcaw")) then
+            drawDynTab("cyb", buildDynList("cyb", "gamedataItem_Record", CYBER_GROUPS), t("cawall"), t("cawwarn"))
+            ImGui.EndTabItem()
+        end
+        if ImGui.BeginTabItem(t("vehicles")) then
+            drawDynTab("veh", buildDynList("veh", "gamedataVehicle_Record", VEH_GROUPS), t("unlockveh"), t("vehwarn"))
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem(t("tabcarry")) then
