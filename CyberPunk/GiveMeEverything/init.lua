@@ -1,4 +1,4 @@
--- Give Me Everything — in-game panel for the CET overlay (opens with the console)
+-- Give Me Everything - in-game panel for the CET overlay (opens with the console)
 -- + a bindable hotkey (set it in CET > Bindings).
 
 local AMOUNT = 1000000  -- how much the hotkey adds
@@ -73,9 +73,42 @@ local L = {
         gsande       = "Sandevistan",
         gberserk     = "Berserk",
         gdeck        = "Cyberdecks",
-        gcyber       = "Cyberware — other",
+        gcyber       = "Cyberware - other",
         gjohnny      = "Johnny Silverhand set",
         gclothes     = "Clothing",
+        tabclothes   = "Clothing",
+        clothwarn    = "Warning: taking every clothing item will leave V heavily overweight - barely able to walk until you stash or sell the pile.",
+        clothall     = "Give ALL clothing",
+        areahead     = "Head",
+        areaface     = "Face",
+        areaouter    = "Jackets / Coats",
+        areainner    = "Shirts / Tops",
+        arealegs     = "Pants",
+        areafeet     = "Shoes",
+        areaoutfit   = "Outfits",
+        areaother    = "Other",
+        taballweapons = "All weapons",
+        weapall      = "Give ALL weapons",
+        weapwarn     = "Warning: taking every weapon will also leave V heavily overweight.",
+        tabmods      = "Weapon mods",
+        modall       = "Give ALL mods",
+        modwarn      = "Attachments and mods weigh little, but there are a lot of them.",
+        mscopes      = "Scopes",
+        mmuzzles     = "Muzzles / Silencers",
+        mranged      = "Ranged weapon mods",
+        mmelee       = "Melee mods",
+        mcloth       = "Clothing mods",
+        tabcarry     = "Carry weight",
+        carrybonus   = "Extra carry capacity",
+        carryhint    = "Adds to V's carry capacity. 0 = off. Reapplies automatically on load - pairs well with the give-everything buttons.",
+        recipes      = "Crafting recipes",
+        recipesall   = "Unlock all crafting recipes",
+        recipesdone  = "recipes learned",
+        dupes        = "Duplicates",
+        dupesbtn     = "Sell duplicates (keep best of each)",
+        dupeshint    = "Scans weapons, clothing and cyberware in your inventory: same name = duplicate. Keeps the highest tier, sells the rest. Equipped and quest items are never touched.",
+        dupesdone    = "duplicates sold",
+        dupesnone    = "No duplicates found",
     },
     pt = {
         money        = "Dinheiro",
@@ -141,14 +174,47 @@ local L = {
         gsmoke       = "Fumaça",
         gbio         = "Biorisco",
         healhdr      = "Cura",
-        gcyber       = "Cyberware — outros",
+        gcyber       = "Cyberware - outros",
         gjohnny      = "Set do Johnny Silverhand",
         gclothes     = "Roupas",
+        tabclothes   = "Roupas",
+        clothwarn    = "Aviso: pegar todas as roupas deixa V com excesso de peso - mal vai conseguir andar até guardar ou vender a pilha.",
+        clothall     = "Dar TODAS as roupas",
+        areahead     = "Cabeça",
+        areaface     = "Rosto",
+        areaouter    = "Jaquetas / Casacos",
+        areainner    = "Camisas / Tops",
+        arealegs     = "Calças",
+        areafeet     = "Sapatos",
+        areaoutfit   = "Conjuntos",
+        areaother    = "Outros",
+        taballweapons = "Armas (todas)",
+        weapall      = "Dar TODAS as armas",
+        weapwarn     = "Aviso: pegar todas as armas também deixa V com excesso de peso.",
+        tabmods      = "Mods de arma",
+        modall       = "Dar TODOS os mods",
+        modwarn      = "Acessórios e mods pesam pouco, mas são muitos.",
+        mscopes      = "Miras",
+        mmuzzles     = "Bocais / Silenciadores",
+        mranged      = "Mods de arma de fogo",
+        mmelee       = "Mods corpo a corpo",
+        mcloth       = "Mods de roupa",
+        tabcarry     = "Carga",
+        carrybonus   = "Capacidade de carga extra",
+        carryhint    = "Soma à capacidade de carga de V. 0 = desligado. Reaplica sozinho ao carregar o jogo - combina com os botões de dar tudo.",
+        recipes      = "Receitas de craft",
+        recipesall   = "Desbloquear todas as receitas",
+        recipesdone  = "receitas aprendidas",
+        dupes        = "Duplicatas",
+        dupesbtn     = "Vender duplicatas (mantém a melhor de cada)",
+        dupeshint    = "Varre armas, roupas e cyberware do inventário: mesmo nome = duplicata. Mantém a de maior tier, vende o resto. Itens equipados e de missão nunca são tocados.",
+        dupesdone    = "duplicatas vendidas",
+        dupesnone    = "Nenhuma duplicata encontrada",
     },
 }
 
 -- settings.json holds lang + multipliers; lang.txt kept as read-only fallback (pre-1.2.0)
-local settings = { lang = "en", xpmult = 1, dmgmult = 1 }
+local settings = { lang = "en", xpmult = 1, dmgmult = 1, carrybonus = 0 }
 
 local function t(key) return L[settings.lang][key] or L.en[key] or key end
 
@@ -172,6 +238,8 @@ local function loadSettings()
             if m and m >= 1 and m <= 10 then settings.xpmult = math.floor(m) end
             local d = tonumber(saved.dmgmult)
             if d and d >= 1 and d <= 10 then settings.dmgmult = math.floor(d) end
+            local c = tonumber(saved.carrybonus)
+            if c and c >= 0 and c <= 50000 then settings.carrybonus = math.floor(c) end
         end
         return
     end
@@ -420,26 +488,40 @@ local GEAR = {
 }
 
 -- AllDamageDonePercentBonus: DamageSystem does attack *= 1 + value, quickhacks included,
--- so mult N = modifier N-1. Modifier dies with the player entity: reapplied on OnGameAttached.
+-- so mult N = modifier N-1. Modifiers die with the player entity; on OnGameAttached the
+-- player isn't queryable yet, so reapply retries via onUpdate until Game.GetPlayer() works.
 local dmgMod = nil
-local function applyDmgMult()
+local carryMod = nil
+local statPending = 0
+
+-- shared shape for the damage and carry-capacity modifiers: drop old handle, add if enabled
+local function applyStatMod(handle, statType, enabled, value)
+    local newHandle = handle
     local ok, err = pcall(function()
         local player = Game.GetPlayer()
         if not player then return end
         local stats = Game.GetStatsSystem()
-        if dmgMod then
-            stats:RemoveModifier(player:GetEntityID(), dmgMod)
-            dmgMod = nil
+        if newHandle then
+            stats:RemoveModifier(player:GetEntityID(), newHandle)
+            newHandle = nil
         end
-        if settings.dmgmult > 1 then
-            dmgMod = RPGManager.CreateStatModifier(
-                gamedataStatType.AllDamageDonePercentBonus,
-                gameStatModifierType.Additive,
-                settings.dmgmult - 1)
-            stats:AddModifier(player:GetEntityID(), dmgMod)
+        if enabled then
+            newHandle = RPGManager.CreateStatModifier(statType, gameStatModifierType.Additive, value)
+            stats:AddModifier(player:GetEntityID(), newHandle)
         end
     end)
-    if not ok then spdlog.info("GiveMeEverything: dmg mult failed: " .. tostring(err)) end
+    if not ok then spdlog.info("GiveMeEverything: stat mod failed: " .. tostring(err)) end
+    return newHandle
+end
+
+local function applyDmgMult()
+    dmgMod = applyStatMod(dmgMod, gamedataStatType.AllDamageDonePercentBonus,
+        settings.dmgmult > 1, settings.dmgmult - 1)
+end
+
+local function applyCarryBonus()
+    carryMod = applyStatMod(carryMod, gamedataStatType.CarryCapacity,
+        settings.carrybonus > 0, settings.carrybonus)
 end
 
 -- follow the game's on-screen language: pt-* = Portuguese, anything else = English
@@ -455,6 +537,7 @@ end
 
 local items = {}
 registerForEvent("onInit", function()
+    loadSettings()  -- file-scope load can run before CET's io is ready; redo here
     detectLang()
     local map = {
         comp1 = { "Items.LowQualityMaterial1", "Items.CommonMaterial1" },
@@ -511,9 +594,27 @@ registerForEvent("onInit", function()
     end)
 
     Observe("PlayerPuppet", "OnGameAttached", function()
-        dmgMod = nil  -- old handle died with the previous player entity
-        if settings.dmgmult > 1 then applyDmgMult() end
+        dmgMod = nil  -- old handles died with the previous player entity
+        carryMod = nil
+        if settings.dmgmult > 1 or settings.carrybonus > 0 then statPending = 2.0 end
     end)
+
+    -- CET reloaded mid-session: no OnGameAttached will come, apply on the running player
+    if settings.dmgmult > 1 or settings.carrybonus > 0 then statPending = 2.0 end
+end)
+
+registerForEvent("onUpdate", function(dt)
+    if statPending > 0 then
+        statPending = statPending - dt
+        if statPending <= 0 then
+            if Game.GetPlayer() then
+                applyDmgMult()
+                applyCarryBonus()
+            else
+                statPending = 1.0  -- player not up yet (main menu / still loading), try again
+            end
+        end
+    end
 end)
 
 local function addItem(id, qty, label)
@@ -736,7 +837,8 @@ local function romanceRow(name, fact)
 end
 
 local OPEN = ImGuiTreeNodeFlags.DefaultOpen
-local WCOL = 220  -- weapons need a wider label column
+
+local sellDuplicates  -- defined after QUALITY_RANK, used by the Items tab below
 
 local function drawItemsTab()
     if ImGui.Button("GIVE ME EVERYTHING", -1, 32) then giveEverything() end
@@ -764,6 +866,10 @@ local function drawItemsTab()
     if ImGui.CollapsingHeader(t("cyberware"), OPEN) then
         itemRow(t("shard"), "shard", 1)
         itemRow(t("shard"), "shard", 5)
+    end
+    if ImGui.CollapsingHeader(t("dupes"), OPEN) then
+        if ImGui.Button(t("dupesbtn"), -1, 28) then sellDuplicates() end
+        ImGui.TextWrapped(t("dupeshint"))
     end
 end
 
@@ -856,14 +962,15 @@ local function drawProgressionTab()
     end
 end
 
+-- button first, then label (see dynRow): keeps long names from sliding under the button
 local function weaponRow(w)
-    ImGui.Text(w.label)
-    ImGui.SameLine(WCOL)
     if ownedCache[w.id] then
         ImGui.Text(t("owned"))
     elseif ImGui.Button(t("give") .. "##" .. w.id) then
         giveWeapon(w)
     end
+    ImGui.SameLine(120)
+    ImGui.Text(w.label)
 end
 
 local filters = {}
@@ -911,6 +1018,296 @@ local function drawGearList(id, groups)
     end
 end
 
+-- dynamic item lists pulled from TweakDB; built on first open of each tab.
+-- Clothing keeps every record (color variants share a display name); weapons dedupe
+-- by name keeping the highest-quality preset, so "give all" hands out the orange ones.
+local CLOTH_GROUPS = {
+    order = { "areahead", "areaface", "areaouter", "areainner", "arealegs", "areafeet", "areaoutfit", "areaother" },
+    map = { Head = "areahead", Face = "areaface", OuterChest = "areaouter", InnerChest = "areainner",
+            Legs = "arealegs", Feet = "areafeet", Outfit = "areaoutfit" },
+    typeOf = function(rec) return rec:EquipArea():Type().value end,
+}
+local WEAPON_GROUPS = {
+    order = { "wpistols", "wsmgs", "wrifles", "wshotguns", "wlmg", "wsnipers", "wmelee", "wcyber", "areaother" },
+    map = {
+        Wea_Handgun = "wpistols", Wea_Revolver = "wpistols",
+        Wea_SubmachineGun = "wsmgs",
+        Wea_AssaultRifle = "wrifles", Wea_Rifle = "wrifles",
+        Wea_Shotgun = "wshotguns", Wea_ShotgunDual = "wshotguns",
+        Wea_LightMachineGun = "wlmg", Wea_HeavyMachineGun = "wlmg", Wea_GrenadeLauncher = "wlmg",
+        Wea_SniperRifle = "wsnipers", Wea_PrecisionRifle = "wsnipers",
+        Wea_Katana = "wmelee", Wea_Knife = "wmelee", Wea_Sword = "wmelee", Wea_Machete = "wmelee",
+        Wea_Axe = "wmelee", Wea_Chainsword = "wmelee", Wea_Hammer = "wmelee", Wea_OneHandedClub = "wmelee",
+        Wea_TwoHandedClub = "wmelee", Wea_LongBlade = "wmelee", Wea_ShortBlade = "wmelee",
+        Wea_Melee = "wmelee", Wea_Fists = "wmelee",
+        Cyb_MantisBlades = "wcyber", Cyb_StrongArms = "wcyber", Cyb_NanoWires = "wcyber", Cyb_Launcher = "wcyber",
+    },
+    typeOf = function(rec) return rec:ItemType():Type().value end,
+    skip = function(tv) return tv ~= nil and tv:find("^Wea_Vehicle") ~= nil end,
+    dedupe = true,
+}
+local MODS_GROUPS = {
+    order = { "mscopes", "mmuzzles", "mranged", "mmelee", "mcloth" },
+    map = {
+        Prt_Scope = "mscopes", Prt_ShortScope = "mscopes", Prt_LongScope = "mscopes",
+        Prt_PowerSniperScope = "mscopes", Prt_TechSniperScope = "mscopes", Prt_ScopeRail = "mscopes",
+        Prt_Muzzle = "mmuzzles", Prt_HandgunMuzzle = "mmuzzles", Prt_RifleMuzzle = "mmuzzles",
+        Prt_Mod = "mranged", Prt_RangedMod = "mranged", Prt_PowerMod = "mranged", Prt_TechMod = "mranged",
+        Prt_SmartMod = "mranged", Prt_HandgunMod = "mranged", Prt_ShotgunMod = "mranged",
+        Prt_Magazine = "mranged", Prt_Stock = "mranged", Prt_TargetingSystem = "mranged", Prt_Capacitor = "mranged",
+        Prt_BladeMod = "mmelee", Prt_BluntMod = "mmelee", Prt_MeleeMod = "mmelee", Prt_ThrowableMod = "mmelee",
+        Prt_FabricEnhancer = "mcloth", Prt_HeadFabricEnhancer = "mcloth", Prt_FaceFabricEnhancer = "mcloth",
+        Prt_TorsoFabricEnhancer = "mcloth", Prt_OuterTorsoFabricEnhancer = "mcloth",
+        Prt_PantsFabricEnhancer = "mcloth", Prt_BootsFabricEnhancer = "mcloth",
+    },
+    typeOf = function(rec) return rec:ItemType():Type().value end,
+    strict = true,  -- everything that isn't a mapped part type is skipped, not bucketed into Other
+    dedupe = true,
+}
+
+local QUALITY_RANK = {
+    Random = 1, Common = 2, CommonPlus = 3, Uncommon = 4, UncommonPlus = 5, Rare = 6,
+    RarePlus = 7, Epic = 8, EpicPlus = 9, Legendary = 10, LegendaryPlus = 11, LegendaryPlusPlus = 12,
+}
+
+local dynLists = {}
+
+-- recordTypes: string or list of candidate record classes; first one yielding entries wins
+local function buildDynList(key, recordTypes, def)
+    if dynLists[key] then return dynLists[key] end
+    if type(recordTypes) == "string" then recordTypes = { recordTypes } end
+    local groups, best, total = {}, {}, 0
+    for _, recordType in ipairs(recordTypes) do
+        local records = {}
+        pcall(function() records = TweakDB:GetRecords(recordType) or {} end)
+        local count = 0
+        for _, rec in ipairs(records) do
+            pcall(function()
+                local name = Game.GetLocalizedTextByKey(rec:DisplayName())
+                if name == nil or name == "" then return end
+                local tv = nil
+                pcall(function() tv = def.typeOf(rec) end)
+                if def.skip and def.skip(tv) then return end
+                local g = def.map[tv]
+                if g == nil then
+                    if def.strict then return end
+                    g = "areaother"
+                end
+                local entry = { label = name, id = rec:GetID() }
+                if def.dedupe then
+                    local rank = 0
+                    pcall(function() rank = QUALITY_RANK[rec:Quality():Name().value] or 0 end)
+                    local dk = g .. "|" .. name
+                    if best[dk] == nil then
+                        groups[g] = groups[g] or {}
+                        groups[g][#groups[g] + 1] = entry
+                        best[dk] = { entry = entry, rank = rank }
+                        count = count + 1
+                    elseif rank > best[dk].rank then
+                        best[dk].entry.id = entry.id
+                        best[dk].rank = rank
+                    end
+                else
+                    groups[g] = groups[g] or {}
+                    groups[g][#groups[g] + 1] = entry
+                    count = count + 1
+                end
+            end)
+        end
+        if count > 0 then break end
+    end
+    for _, list in pairs(groups) do
+        total = total + #list
+        table.sort(list, function(a, b) return a.label < b.label end)
+    end
+    dynLists[key] = { groups = groups, total = total, order = def.order }
+    return dynLists[key]
+end
+
+local function giveDynItem(c)
+    Game.GetTransactionSystem():GiveItem(Game.GetPlayer(), ItemID.FromTDBID(c.id), 1)
+end
+
+-- button first, then label: long pt-BR names were sliding under a right-aligned button
+local function dynRow(c, uid)
+    if ImGui.Button(t("give") .. "##d" .. uid) then
+        giveDynItem(c)
+        notify("+1 " .. c.label)
+    end
+    ImGui.SameLine()
+    ImGui.Text(c.label)
+end
+
+local function drawDynTab(id, data, allLabel, warnText)
+    ImGui.TextWrapped(warnText)
+    if ImGui.Button(allLabel .. " (" .. data.total .. ")", -1, 28) then
+        local n = 0
+        for _, list in pairs(data.groups) do
+            for _, c in ipairs(list) do
+                giveDynItem(c)
+                n = n + 1
+            end
+        end
+        notify("+" .. n .. " " .. t("itemsgiven"))
+    end
+    ImGui.Separator()
+    ImGui.SetNextItemWidth(220)
+    local text, changed = ImGui.InputTextWithHint("##filter" .. id, t("search"), filters[id] or "", 64)
+    if changed then filters[id] = text end
+    local needle = (filters[id] or ""):lower()
+    if needle ~= "" then
+        -- flat result list, capped so ImGui doesn't choke on huge matches
+        local found = 0
+        for _, g in ipairs(data.order) do
+            for i, c in ipairs(data.groups[g] or {}) do
+                if c.label:lower():find(needle, 1, true) then
+                    found = found + 1
+                    if found <= 300 then dynRow(c, id .. g .. i) end
+                end
+            end
+        end
+        if found == 0 then ImGui.Text(t("noresults")) end
+        return
+    end
+    for _, g in ipairs(data.order) do
+        local list = data.groups[g]
+        if list and #list > 0 then
+            if ImGui.CollapsingHeader(t(g) .. " (" .. #list .. ")##" .. id .. g) then
+                if ImGui.Button(t("giveall") .. "##" .. id .. g) then
+                    for _, c in ipairs(list) do giveDynItem(c) end
+                    notify("+" .. #list .. " " .. t("itemsgiven"))
+                end
+                for i, c in ipairs(list) do dynRow(c, id .. g .. i) end
+            end
+        end
+    end
+end
+
+local function drawCarryTab()
+    if ImGui.CollapsingHeader(t("carrybonus"), OPEN) then
+        local value, changed = ImGui.SliderInt("##carry", settings.carrybonus, 0, 50000, "+%d")
+        if changed then
+            settings.carrybonus = value
+            saveSettings()
+            applyCarryBonus()
+        end
+        ImGui.TextWrapped(t("carryhint"))
+    end
+end
+
+-- learn every craftable recipe: any item record carrying CraftingData, straight into the
+-- player CraftBook (same API the addAllRecipes mod uses); ammo recipes are junk, skipped
+local function unlockAllRecipes()
+    local n = 0
+    local ok, err = pcall(function()
+        local craftBook = Game.GetScriptableSystemsContainer():Get("CraftingSystem"):GetPlayerCraftBook()
+        local seen = {}
+        local classes = {
+            "gamedataClothing_Record", "gamedataWeaponItem_Record", "gamedataRecipeItem_Record",
+            "gamedataConsumableItem_Record", "gamedataItem_Record", "gamedataGrenade_Record",
+        }
+        for _, className in ipairs(classes) do
+            for _, rec in ipairs(TweakDB:GetRecords(className) or {}) do
+                pcall(function()
+                    local idStr = tostring(rec:GetID().value)
+                    if seen[idStr] or idStr:find("Ammo") then return end
+                    if rec:CraftingData() or rec:CraftingDataHandle() then
+                        seen[idStr] = true
+                        craftBook:AddRecipe(rec:GetID())
+                        n = n + 1
+                    end
+                end)
+            end
+        end
+    end)
+    if ok then
+        notify("+" .. n .. " " .. t("recipesdone"))
+    else
+        notify(t("recipes") .. " " .. t("failed"))
+        spdlog.info("GiveMeEverything: recipes failed: " .. tostring(err))
+    end
+end
+
+-- same display name = duplicate (covers repeated give-alls and same-name tier variants);
+-- keeps the highest-tier copy, sells the rest; equipped and quest items untouched
+sellDuplicates = function()
+    local player = Game.GetPlayer()
+    if not player then return end
+    local ts = Game.GetTransactionSystem()
+    local epd
+    pcall(function()
+        epd = Game.GetScriptableSystemsContainer():Get("EquipmentSystem"):GetPlayerData(player)
+    end)
+    local items
+    pcall(function()
+        local _, list = ts:GetItemList(player)
+        items = list
+    end)
+    if epd == nil or items == nil then
+        notify(t("dupes") .. " " .. t("failed"))
+        spdlog.info("GiveMeEverything: sellDuplicates aborted (no equipment data or item list)")
+        return
+    end
+    local groups = {}
+    for _, it in ipairs(items) do
+        pcall(function()
+            local ty = it:GetItemType().value
+            if not (ty:find("Wea_", 1, true) == 1 or ty:find("Clo_", 1, true) == 1
+                    or ty:find("Cyb", 1, true) == 1) then return end
+            if it:HasTag(CName.new("Quest")) then return end
+            local id = it:GetID()
+            local name = Game.GetLocalizedTextByKey(TweakDB:GetRecord(id.id):DisplayName())
+            if name == nil or name == "" then return end
+            local equipped = true  -- if the check errors, treat as equipped and never touch it
+            pcall(function() equipped = epd:IsEquipped(id) end)
+            local g = groups[name]
+            if g == nil then
+                g = { copies = {}, hasEquipped = false }
+                groups[name] = g
+            end
+            if equipped then
+                g.hasEquipped = true
+                return
+            end
+            local rank, price, qty = 0, 0, 1
+            pcall(function() rank = (QUALITY_RANK[RPGManager.GetItemDataQuality(it).value] or 0) * 10 end)
+            pcall(function() rank = rank + RPGManager.GetItemPlus(it) end)
+            pcall(function() price = it:GetStatValueByType(gamedataStatType.Price) end)
+            pcall(function() qty = it:GetQuantity() end)
+            g.copies[#g.copies + 1] = { id = id, rank = rank, price = price, qty = qty }
+        end)
+    end
+    local sold, cash = 0, 0
+    for _, g in pairs(groups) do
+        local keep = nil
+        if not g.hasEquipped then  -- an equipped copy already counts as the one kept
+            for _, c in ipairs(g.copies) do
+                if keep == nil or c.rank > keep.rank then keep = c end
+            end
+        end
+        for _, c in ipairs(g.copies) do
+            local removeQty = (c == keep) and (c.qty - 1) or c.qty
+            if removeQty > 0 then
+                local ok = pcall(function() ts:RemoveItem(player, c.id, removeQty) end)
+                if ok then
+                    sold = sold + removeQty
+                    -- ponytail: flat 10% of the Price stat, close enough to vendor rates
+                    cash = cash + math.floor(c.price * 0.1) * removeQty
+                end
+            end
+        end
+    end
+    if sold == 0 then
+        notify(t("dupesnone"))
+        return
+    end
+    if cash > 0 then Game.AddToInventory("Items.money", cash) end
+    notify(sold .. " " .. t("dupesdone") .. " (+$" .. cash .. ")")
+    refreshOwned()
+end
+
+registerHotkey("GME_SellDupes", "Sell duplicate gear", function() sellDuplicates() end)
+
 local ncpdDisabled = false
 local function drawNcpdSection()
     if ImGui.Button(t("clearwanted")) then clearWanted() end
@@ -946,6 +1343,9 @@ local function drawUnlocksTab()
                 spdlog.info("GiveMeEverything: EnableAllPlayerVehicles failed: " .. tostring(err))
             end
         end
+    end
+    if ImGui.CollapsingHeader(t("recipes"), OPEN) then
+        if ImGui.Button(t("recipesall")) then unlockAllRecipes() end
     end
     if ImGui.CollapsingHeader(t("ncpd"), OPEN) then
         drawNcpdSection()
@@ -1010,6 +1410,22 @@ registerForEvent("onDraw", function()
         end
         if ImGui.BeginTabItem(t("tabgear")) then
             drawGearList("g", GEAR)
+            ImGui.EndTabItem()
+        end
+        if ImGui.BeginTabItem(t("taballweapons")) then
+            drawDynTab("aw", buildDynList("aw", "gamedataWeaponItem_Record", WEAPON_GROUPS), t("weapall"), t("weapwarn"))
+            ImGui.EndTabItem()
+        end
+        if ImGui.BeginTabItem(t("tabmods")) then
+            drawDynTab("m", buildDynList("m", { "gamedataAttachment_Record", "gamedataItem_Record" }, MODS_GROUPS), t("modall"), t("modwarn"))
+            ImGui.EndTabItem()
+        end
+        if ImGui.BeginTabItem(t("tabclothes")) then
+            drawDynTab("c", buildDynList("c", "gamedataClothing_Record", CLOTH_GROUPS), t("clothall"), t("clothwarn"))
+            ImGui.EndTabItem()
+        end
+        if ImGui.BeginTabItem(t("tabcarry")) then
+            drawCarryTab()
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem(t("tabunlocks")) then
