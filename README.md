@@ -8,7 +8,7 @@ Source code for my published game mods.
 
 ## 🎮 Mods
 
-| Mod | Game | Framework | Nexus |
+| Mod | Game | Framework | Link |
 |-----|------|-----------|-------|
 | [CupheadDoubleAssist](Cuphead/CupheadDoubleAssist) | Cuphead | BepInEx 5 | [115](https://www.nexusmods.com/cuphead/mods/115) |
 | [CupheadUltraWideBepInEx](Cuphead/CupheadUltraWideBepInEx) | Cuphead | BepInEx 5 | [122](https://www.nexusmods.com/cuphead/mods/122) |
@@ -23,6 +23,9 @@ Source code for my published game mods.
 | [OnePunchHK](Hollow%20Knight/OnePunchHK) | Hollow Knight | BepInEx 5 | [193](https://www.nexusmods.com/hollowknight/mods/193) |
 | [MouseTrainer](MOUSE/MouseTrainer) | MOUSE: P.I. For Hire | BepInEx 5 | [23](https://www.nexusmods.com/mousepiforhire/mods/23) |
 | [UltraCleaningTools](CrimeCleaner/UltraCleaningTools) | Crime Scene Cleaner | MelonLoader | [10](https://www.nexusmods.com/crimescenecleaner/mods/10) |
+| [QuestGuide](CyberPunk/QuestGuide) | Cyberpunk 2077 | redscript | [31784](https://www.nexusmods.com/cyberpunk2077/mods/31784) |
+| [EnemiesEvolve](Brotato/EnemiesEvolve) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769878400) |
+| [ModOptionsTabs](Brotato/ModOptionsTabs) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769887447) |
 
 ## 🔨 Build
 
@@ -35,4 +38,5 @@ adjust to your install or pass `/p:GameDir=...`.
 Each mod folder contains the release zip (same file published on Nexus Mods), in the
 mod manager layout: `BepInEx/plugins/<Mod>.dll` for BepInEx games, flat dll for
 MelonLoader, game-specific trees for Cyberpunk. Extract into the game folder or
-install with Vortex / Mod Organizer 2.
+install with Vortex / Mod Organizer 2. Brotato mods are distributed via Steam
+Workshop (subscribe to install); the zip here is the uploaded package.

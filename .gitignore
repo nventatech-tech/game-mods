@@ -5,6 +5,10 @@ obj/
 # dlls do jogo/BepInEx usadas so como referencia de build
 Hollow Knight/OnePunchHK/lib/
 
+# codigo do jogo descompilado e ferramentas de terceiros (nao sao codigo deste repo)
+Brotato/decompiled/
+Brotato/tools/
+
 # mods de terceiros instalados (nao sao codigo deste repo)
 CyberPunk/BetterLootMarkers/
 CyberPunk/ImmersiveFirstPerson/

@@ -1,0 +1,97 @@
+{
+	"name": "EnemiesEvolve",
+	"namespace": "opaaaaaaaaaaaa",
+	"version_number": "1.0.0",
+	"description": "Makes enemies stronger instead of more numerous. Two modes: enemy HP, damage and speed scale up each wave, or a flat multiplier for the whole run. Everything configurable with sliders (requires ModOptions).",
+	"website_url": "",
+	"dependencies": [],
+	"extra": {
+		"godot": {
+			"authors": [
+				"opaaaaaaaaaaaa"
+			],
+			"optional_dependencies": [
+				"dami-ModOptions"
+			],
+			"compatible_game_version": [
+				"1.1.15.4"
+			],
+			"compatible_mod_loader_version": [
+				"6.3.0"
+			],
+			"incompatibilities": [],
+			"load_before": [],
+			"tags": [
+				"New Mechanics",
+				"Challenges"
+			],
+			"config_schema": {
+				"type": "object",
+				"properties": {
+					"mode": {
+						"type": "string",
+						"enum": [
+							"Per wave",
+							"Flat multiplier"
+						],
+						"default": "Per wave",
+						"tooltip": "Per wave: enemies get stronger each wave. Flat multiplier: same boost the whole run."
+					},
+					"hp_percent_per_wave": {
+						"type": "number",
+						"tooltip": "Per wave mode: extra enemy health per wave. 5% = 2x HP at wave 20.",
+						"default": 0.05,
+						"minimum": 0,
+						"maximum": 1.0,
+						"multipleOf": 0.01
+					},
+					"damage_percent_per_wave": {
+						"type": "number",
+						"tooltip": "Per wave mode: extra enemy damage per wave. 5% = 2x damage at wave 20.",
+						"default": 0.05,
+						"minimum": 0,
+						"maximum": 1.0,
+						"multipleOf": 0.01
+					},
+					"speed_percent_per_wave": {
+						"type": "number",
+						"tooltip": "Per wave mode: extra enemy speed per wave. Off by default - changes the game a lot.",
+						"default": 0,
+						"minimum": 0,
+						"maximum": 0.3,
+						"multipleOf": 0.01
+					},
+					"hp_multiplier": {
+						"type": "number",
+						"tooltip": "Flat mode: enemy health multiplier for the whole run.",
+						"default": 2,
+						"minimum": 1,
+						"maximum": 20,
+						"multipleOf": 0.25,
+						"format": "%.2fx"
+					},
+					"damage_multiplier": {
+						"type": "number",
+						"tooltip": "Flat mode: enemy damage multiplier for the whole run.",
+						"default": 2,
+						"minimum": 1,
+						"maximum": 20,
+						"multipleOf": 0.25,
+						"format": "%.2fx"
+					},
+					"speed_multiplier": {
+						"type": "number",
+						"tooltip": "Flat mode: enemy speed multiplier for the whole run. 1x = off.",
+						"default": 1,
+						"minimum": 1,
+						"maximum": 3,
+						"multipleOf": 0.05,
+						"format": "%.2fx"
+					}
+				}
+			},
+			"description_rich": "",
+			"image": null
+		}
+	}
+}
