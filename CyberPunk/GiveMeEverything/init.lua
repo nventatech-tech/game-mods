@@ -51,6 +51,18 @@ local L = {
         search       = "Search",
         customqty    = "Custom amount (0 = off)",
         noresults    = "Nothing found",
+        results      = "results",
+        giveallres   = "Give all results",
+        showing300   = "(showing first 300)",
+        qualcommon   = "Common",
+        qualuncommon = "Uncommon",
+        qualrare     = "Rare",
+        qualepic     = "Epic",
+        quallegend   = "Legendary / Iconic",
+        uiscale      = "UI scale",
+        vcars        = "Cars",
+        vbikes       = "Motorcycles",
+        varmed       = "Armed",
         ammo         = "Ammo",
         setlevel     = "Set",
         setlevelhdr  = "Set level directly",
@@ -212,6 +224,18 @@ local L = {
         search       = "Buscar",
         customqty    = "Quantidade custom (0 = desliga)",
         noresults    = "Nada encontrado",
+        results      = "resultados",
+        giveallres   = "Dar todos os resultados",
+        showing300   = "(mostrando os 300 primeiros)",
+        qualcommon   = "Comum",
+        qualuncommon = "Incomum",
+        qualrare     = "Raro",
+        qualepic     = "Épico",
+        quallegend   = "Lendário / Icônico",
+        uiscale      = "Escala da interface",
+        vcars        = "Carros",
+        vbikes       = "Motos",
+        varmed       = "Armados",
         ammo         = "Munição",
         setlevel     = "Definir",
         setlevelhdr  = "Setar nível direto",
@@ -326,7 +350,7 @@ local L = {
 }
 
 -- settings.json holds lang + multipliers; lang.txt kept as read-only fallback (pre-1.2.0)
-local settings = { lang = "en", xpmult = 1, dmgmult = 1, carrybonus = 0,
+local settings = { lang = "en", xpmult = 1, dmgmult = 1, carrybonus = 0, uiscale = 1.0,
     god = false, stamina = false, infammo = false, oneshot = false, favorites = {} }
 
 local function t(key) return L[settings.lang][key] or L.en[key] or key end
@@ -353,6 +377,8 @@ local function loadSettings()
             if d and d >= 1 and d <= 10 then settings.dmgmult = math.floor(d) end
             local c = tonumber(saved.carrybonus)
             if c and c >= 0 and c <= 50000 then settings.carrybonus = math.floor(c) end
+            local u = tonumber(saved.uiscale)
+            if u and u >= 0.8 and u <= 1.6 then settings.uiscale = u end
             settings.god = saved.god == true
             settings.stamina = saved.stamina == true
             settings.infammo = saved.infammo == true
@@ -966,15 +992,46 @@ registerHotkey("GME_Undo", "Undo last item give", function() undoLast() end)
 
 local COL = 170  -- label column width; buttons align after it
 local customQty = 0  -- when > 0, every item row gets an extra +custom button
+local function bw(px) return px * (settings.uiscale or 1) end
+
+-- zebra-striped list wrapper; plain list fallback if this CET build lacks the tables API.
+-- explicit row colors: the default alt-row tint is invisible over the dark theme
+local zebraOn = false
+local function beginList(uid)
+    if ImGui.BeginTable == nil or ImGuiTableFlags == nil or ImGuiCol.TableRowBg == nil then
+        zebraOn = false
+        return false
+    end
+    ImGui.PushStyleColor(ImGuiCol.TableRowBg, 0, 0, 0, 0)
+    ImGui.PushStyleColor(ImGuiCol.TableRowBgAlt, 1.00, 0.92, 0.40, 0.09)
+    -- no SizingFixedFit: fixed columns cache their width, clipping rows after a UI-scale change
+    local ok = ImGui.BeginTable("##z" .. uid, 1, ImGuiTableFlags.RowBg)
+    if not ok then ImGui.PopStyleColor(2) end
+    zebraOn = ok
+    return ok
+end
+
+-- nil = use the section-level zebra state; row helpers call this with no argument
+local function listRow(z)
+    if z == nil then z = zebraOn end
+    if z then ImGui.TableNextRow(); ImGui.TableNextColumn() end
+end
+
+local function endList(z)
+    if z == nil then z = zebraOn end
+    if z then ImGui.EndTable(); ImGui.PopStyleColor(2) end
+    zebraOn = false
+end
 
 -- one row per resource: label, then [-qty] [+qty] [+custom]
 local function itemRow(label, key, qty)
     if not items[key] then return end
+    listRow()
     ImGui.Text(label)
-    ImGui.SameLine(COL)
-    if ImGui.Button("-" .. qty .. "##" .. key) then removeItem(items[key], qty, label) end
+    ImGui.SameLine(COL * (settings.uiscale or 1))
+    if ImGui.Button("-" .. qty .. "##" .. key, bw(92), 0) then removeItem(items[key], qty, label) end
     ImGui.SameLine()
-    if ImGui.Button("+" .. qty .. "##" .. key) then addItem(items[key], qty, label) end
+    if ImGui.Button("+" .. qty .. "##" .. key, bw(92), 0) then addItem(items[key], qty, label) end
     if customQty > 0 then
         ImGui.SameLine()
         if ImGui.Button("+" .. customQty .. "##c" .. key) then addItem(items[key], customQty, label) end
@@ -982,41 +1039,44 @@ local function itemRow(label, key, qty)
 end
 
 local function pointRow(labelKey, kind)
+    listRow()
     ImGui.Text(t(labelKey))
-    ImGui.SameLine(COL)
-    if ImGui.Button("-10##" .. labelKey) then givePoints(kind, -10, t(labelKey)) end
+    ImGui.SameLine(COL * (settings.uiscale or 1))
+    if ImGui.Button("-10##" .. labelKey, bw(56), 0) then givePoints(kind, -10, t(labelKey)) end
     ImGui.SameLine()
-    if ImGui.Button("-1##" .. labelKey) then givePoints(kind, -1, t(labelKey)) end
+    if ImGui.Button("-1##" .. labelKey, bw(56), 0) then givePoints(kind, -1, t(labelKey)) end
     ImGui.SameLine()
-    if ImGui.Button("+1##" .. labelKey) then givePoints(kind, 1, t(labelKey)) end
+    if ImGui.Button("+1##" .. labelKey, bw(56), 0) then givePoints(kind, 1, t(labelKey)) end
     ImGui.SameLine()
-    if ImGui.Button("+10##" .. labelKey) then givePoints(kind, 10, t(labelKey)) end
+    if ImGui.Button("+10##" .. labelKey, bw(56), 0) then givePoints(kind, 10, t(labelKey)) end
 end
 
 -- XP has no safe "remove" in-game, so add-only
 local function xpRow(label, kind, q1, q2)
+    listRow()
     ImGui.Text(label)
-    ImGui.SameLine(COL)
-    if ImGui.Button("+" .. q1 .. "##" .. kind) then giveXP(kind, q1, label) end
+    ImGui.SameLine(COL * (settings.uiscale or 1))
+    if ImGui.Button("+" .. q1 .. "##" .. kind, bw(92), 0) then giveXP(kind, q1, label) end
     ImGui.SameLine()
-    if ImGui.Button("+" .. q2 .. "##" .. kind) then giveXP(kind, q2, label) end
+    if ImGui.Button("+" .. q2 .. "##" .. kind, bw(92), 0) then giveXP(kind, q2, label) end
 end
 
 local function moneyRow(qty, label)
+    listRow()
     ImGui.Text(label)
-    ImGui.SameLine(COL)
-    if ImGui.Button("-" .. label .. "##m") then removeItem("Items.money", qty, "$") end
+    ImGui.SameLine(COL * (settings.uiscale or 1))
+    if ImGui.Button("-" .. label .. "##m", bw(92), 0) then removeItem("Items.money", qty, "$") end
     ImGui.SameLine()
-    if ImGui.Button("+" .. label .. "##m") then addItem("Items.money", qty, "$") end
+    if ImGui.Button("+" .. label .. "##m", bw(92), 0) then addItem("Items.money", qty, "$") end
 end
 
 local function customQtyRow()
-    ImGui.SetNextItemWidth(150)
+    ImGui.SetNextItemWidth(150 * (settings.uiscale or 1))
     local value, changed = ImGui.InputInt(t("customqty"), customQty, 100)
     if changed then customQty = math.max(0, value) end
     if customQty > 0 then
         ImGui.Text("$")
-        ImGui.SameLine(COL)
+        ImGui.SameLine(COL * (settings.uiscale or 1))
         if ImGui.Button("-" .. customQty .. "##cm") then removeItem("Items.money", customQty, "$") end
         ImGui.SameLine()
         if ImGui.Button("+" .. customQty .. "##cm") then addItem("Items.money", customQty, "$") end
@@ -1024,8 +1084,9 @@ local function customQtyRow()
 end
 
 local function romanceRow(name, fact)
+    listRow()
     ImGui.Text(name)
-    ImGui.SameLine(COL)
+    ImGui.SameLine(COL * (settings.uiscale or 1))
     local qs = Game.GetQuestsSystem()
     if qs:GetFactStr(fact) == 1 then
         ImGui.Text(t("unlocked"))
@@ -1040,58 +1101,75 @@ local OPEN = ImGuiTreeNodeFlags.DefaultOpen
 local sellDuplicates  -- defined after QUALITY_RANK, used by the Items tab below
 
 local function drawItemsTab()
-    if ImGui.Button("GIVE ME EVERYTHING", -1, 32) then giveEverything() end
+    if ImGui.Button("GIVE ME EVERYTHING", -1, 32 * (settings.uiscale or 1)) then giveEverything() end
     if ImGui.Button(t("undo")) then undoLast() end
     customQtyRow()
     ImGui.Separator()
     if ImGui.CollapsingHeader(t("money"), OPEN) then
+        beginList("money")
         moneyRow(100000, "100K")
         moneyRow(1000000, "1M")
         moneyRow(10000000, "10M")
+        endList()
     end
     if ImGui.CollapsingHeader(t("crafting"), OPEN) then
+        beginList("craft")
         itemRow("Tier 1", "comp1", 1000)
         itemRow("Tier 2", "comp2", 1000)
         itemRow("Tier 3", "comp3", 1000)
         itemRow("Tier 4", "comp4", 1000)
         itemRow("Tier 5", "comp5", 1000)
+        endList()
     end
     if ImGui.CollapsingHeader(t("quickhack"), OPEN) then
+        beginList("qh")
         itemRow("Tier 1", "qh1", 500)
         itemRow("Tier 2", "qh2", 500)
         itemRow("Tier 3", "qh3", 500)
         itemRow("Tier 4", "qh4", 500)
         itemRow("Tier 5", "qh5", 500)
+        endList()
     end
     if ImGui.CollapsingHeader(t("cyberware"), OPEN) then
+        beginList("shard")
         itemRow(t("shard"), "shard", 1)
         itemRow(t("shard"), "shard", 5)
+        endList()
     end
     if ImGui.CollapsingHeader(t("dupes"), OPEN) then
-        if ImGui.Button(t("dupesbtn"), -1, 28) then sellDuplicates() end
+        if ImGui.Button(t("dupesbtn"), -1, 28 * (settings.uiscale or 1)) then sellDuplicates() end
         ImGui.TextWrapped(t("dupeshint"))
     end
 end
 
 local function drawConsumTab()
     if ImGui.CollapsingHeader(t("godmode"), OPEN) then
+        beginList("tgl")
         local v, c
+        listRow()
         v, c = ImGui.Checkbox(t("tgod"), settings.god)
         if c then settings.god = v; saveSettings() end
+        listRow()
         v, c = ImGui.Checkbox(t("tstamina"), settings.stamina)
         if c then settings.stamina = v; saveSettings() end
+        listRow()
         v, c = ImGui.Checkbox(t("tinfammo"), settings.infammo)
         if c then settings.infammo = v; saveSettings() end
+        listRow()
         v, c = ImGui.Checkbox(t("toneshot"), settings.oneshot)
         if c then settings.oneshot = v; applyOneShot(); saveSettings() end
+        endList()
         ImGui.TextWrapped(t("godhint"))
     end
     if ImGui.CollapsingHeader(t("healhdr"), OPEN) then
+        beginList("heal")
         itemRow("MaxDoc", "maxdoc", 20)
         itemRow("Bounce Back", "bounce", 20)
+        endList()
         if ImGui.Button(t("heal")) then healPlayer() end
     end
     if ImGui.CollapsingHeader(t("grenades"), OPEN) then
+        beginList("gren")
         itemRow("Frag", "grenade", 20)
         itemRow("EMP", "gemp", 20)
         itemRow(t("ginc"), "ginc", 20)
@@ -1100,21 +1178,25 @@ local function drawConsumTab()
         itemRow(t("gsmoke"), "gsmoke", 20)
         itemRow(t("gbio"), "gbio", 20)
         itemRow("Ozob's Nose", "ozob", 10)
+        endList()
     end
     if ImGui.CollapsingHeader(t("ammo"), OPEN) then
+        beginList("ammo")
         itemRow("Pistol / SMG", "ammo1", 500)
         itemRow("Rifle", "ammo2", 500)
         itemRow("Shotgun", "ammo3", 200)
         itemRow("Sniper", "ammo4", 100)
+        endList()
     end
 end
 
 -- Game.SetLevel queues SetProficiencyLevel on PlayerDevelopmentSystem (native, patch 2.x)
 local levelTargets = {}
 local function setLevelRow(label, kind, maxLv)
+    listRow()
     ImGui.Text(label)
-    ImGui.SameLine(COL)
-    ImGui.SetNextItemWidth(100)
+    ImGui.SameLine(COL * (settings.uiscale or 1))
+    ImGui.SetNextItemWidth(120 * (settings.uiscale or 1))
     local v, changed = ImGui.InputInt("##lv" .. kind, levelTargets[kind] or maxLv, 1)
     if changed then levelTargets[kind] = math.min(math.max(v, 1), maxLv) end
     ImGui.SameLine()
@@ -1132,21 +1214,26 @@ end
 
 local function drawProgressionTab()
     if ImGui.CollapsingHeader(t("progression"), OPEN) then
+        beginList("prog")
         pointRow("perks", "Primary")
         pointRow("attributes", "Attribute")
         pointRow("relic", "Espionage")
         xpRow(t("levelxp"), "Level", 1000, 10000)
         xpRow(t("streetcred"), "StreetCred", 1000, 10000)
         itemRow(t("perkreset"), "perkreset", 1)
+        endList()
     end
     if ImGui.CollapsingHeader(t("skills"), OPEN) then
+        beginList("skills")
         xpRow("Solo", "StrengthSkill", 1000, 10000)
         xpRow("Shinobi", "ReflexesSkill", 1000, 10000)
         xpRow("Netrunner", "IntelligenceSkill", 1000, 10000)
         xpRow("Engineer", "TechnicalAbilitySkill", 1000, 10000)
         xpRow("Headhunter", "CoolSkill", 1000, 10000)
+        endList()
     end
     if ImGui.CollapsingHeader(t("setlevelhdr"), OPEN) then
+        beginList("setlv")
         setLevelRow(t("lvl"), "Level", 60)
         setLevelRow(t("streetcred"), "StreetCred", 50)
         setLevelRow("Solo", "StrengthSkill", 60)
@@ -1154,6 +1241,7 @@ local function drawProgressionTab()
         setLevelRow("Netrunner", "IntelligenceSkill", 60)
         setLevelRow("Engineer", "TechnicalAbilitySkill", 60)
         setLevelRow("Headhunter", "CoolSkill", 60)
+        endList()
     end
     if ImGui.CollapsingHeader(t("xpmult"), OPEN) then
         local value, changed = ImGui.SliderInt("##xpmult", settings.xpmult, 1, 10, "%dx")
@@ -1174,6 +1262,64 @@ local function drawProgressionTab()
     end
 end
 
+local QUALITY_RANK = {
+    Random = 1, Common = 2, CommonPlus = 3, Uncommon = 4, UncommonPlus = 5, Rare = 6,
+    RarePlus = 7, Epic = 8, EpicPlus = 9, Legendary = 10, LegendaryPlus = 11, LegendaryPlusPlus = 12,
+}
+
+-- in-game rarity colors; rank 0/common stays default white
+local function qualityColor(rank)
+    if rank >= 10 then return 1.00, 0.60, 0.20 end
+    if rank >= 8 then return 0.75, 0.45, 0.95 end
+    if rank >= 6 then return 0.35, 0.62, 1.00 end
+    if rank >= 4 then return 0.45, 0.85, 0.45 end
+    return nil
+end
+
+-- iconic presets carry Quality "Random" (rolled at spawn), so the tag decides for those
+local function recordRank(rec)
+    local rank = 0
+    pcall(function() rank = QUALITY_RANK[rec:Quality():Name().value] or 0 end)
+    if rank <= 1 then
+        pcall(function()
+            if rec:TagsContains(CName.new("IconicWeapon")) then rank = 10 end
+        end)
+    end
+    return rank
+end
+
+-- static lists carry only id+label; quality is looked up once per id on first draw
+local staticRankCache = {}
+local function staticRank(id)
+    local r = staticRankCache[id]
+    if r == nil then
+        r = 0
+        pcall(function() r = recordRank(TweakDB:GetRecord(id)) end)
+        staticRankCache[id] = r
+    end
+    return r
+end
+
+local function rankName(rank)
+    if rank >= 10 then return t("quallegend") end
+    if rank >= 8 then return t("qualepic") end
+    if rank >= 6 then return t("qualrare") end
+    if rank >= 4 then return t("qualuncommon") end
+    return t("qualcommon")
+end
+
+-- extra: optional second tooltip line (static tabs pass the TweakDB id)
+local function itemLabel(label, rank, extra)
+    rank = rank or 0
+    local r, g, b = qualityColor(rank)
+    if r then ImGui.TextColored(r, g, b, 1.0, label) else ImGui.Text(label) end
+    if ImGui.IsItemHovered() then
+        local tip = label .. "\n" .. rankName(rank)
+        if extra then tip = tip .. "\n" .. tostring(extra) end
+        ImGui.SetTooltip(tip)
+    end
+end
+
 -- button first, then label (see dynRow): keeps long names from sliding under the button
 local function weaponRow(w)
     if ownedCache[w.id] then
@@ -1181,15 +1327,30 @@ local function weaponRow(w)
     elseif ImGui.Button(t("give") .. "##" .. w.id) then
         giveWeapon(w)
     end
-    ImGui.SameLine(120)
-    ImGui.Text(w.label)
+    ImGui.SameLine(120 * (settings.uiscale or 1))
+    itemLabel(w.label, staticRank(w.id), w.id)
 end
 
 local filters = {}
 
+-- tokenized search: every space-separated word must appear in the label, any order
+local function searchTokens(text)
+    local toks = {}
+    for w in text:lower():gmatch("%S+") do toks[#toks + 1] = w end
+    return toks
+end
+
+local function matchesAll(label, toks)
+    label = label:lower()
+    for _, tk in ipairs(toks) do
+        if not label:find(tk, 1, true) then return false end
+    end
+    return true
+end
+
 -- shared by Weapons and Gear tabs: search field + grouped list with give-all
 local function drawGearList(id, groups)
-    ImGui.SetNextItemWidth(220)
+    ImGui.SetNextItemWidth(220 * (settings.uiscale or 1))
     local text, changed = ImGui.InputTextWithHint("##filter" .. id, t("search"), filters[id] or "", 64)
     if changed then filters[id] = text end
     ImGui.Separator()
@@ -1197,16 +1358,30 @@ local function drawGearList(id, groups)
     -- filter active: flat list across all groups, headers skipped
     local needle = (filters[id] or ""):lower()
     if needle ~= "" then
-        local found = 0
+        local toks = searchTokens(needle)
+        local matches = {}
         for _, group in ipairs(groups) do
             for _, w in ipairs(group.weapons) do
-                if w.id and w.label:lower():find(needle, 1, true) then
-                    weaponRow(w)
-                    found = found + 1
-                end
+                if w.id and matchesAll(w.label, toks) then matches[#matches + 1] = w end
             end
         end
-        if found == 0 then ImGui.Text(t("noresults")) end
+        if #matches == 0 then ImGui.Text(t("noresults")); return end
+        ImGui.Text(#matches .. " " .. t("results"))
+        ImGui.SameLine()
+        if ImGui.Button(t("giveallres") .. "##" .. id) then
+            local n = 0
+            for _, w in ipairs(matches) do
+                if not ownedCache[w.id] then
+                    Game.AddToInventory(w.id, 1)
+                    ownedCache[w.id] = true
+                    n = n + 1
+                end
+            end
+            notify("+" .. n .. " " .. t("itemsgiven"))
+        end
+        local z = beginList(id .. "f")
+        for _, w in ipairs(matches) do listRow(z); weaponRow(w) end
+        endList(z)
         return
     end
 
@@ -1223,9 +1398,11 @@ local function drawGearList(id, groups)
                 end
                 notify("+" .. n .. " " .. t("itemsgiven"))
             end
+            local z = beginList(id .. group.key)
             for _, w in ipairs(group.weapons) do
-                if w.id then weaponRow(w) end
+                if w.id then listRow(z); weaponRow(w) end
             end
+            endList(z)
         end
     end
 end
@@ -1254,6 +1431,8 @@ local CYBER_GROUPS = {
     typeOf = function(rec) return rec:EquipArea():Type().value end,
     skip = function(tv) return tv == nil or tv:find("CW$") == nil end,
     dedupe = true,
+    -- arm cyberware (Mantis/Gorilla/etc.) are weapon records: merge both classes here
+    merge = true,
 }
 -- vehicles aren't inventory items: unlock via VehicleSystem so they appear in the phone call list.
 -- ~500 vehicle records include every traffic/NPC variant; dedupe by display name collapses them to
@@ -1261,10 +1440,19 @@ local CYBER_GROUPS = {
 local function unlockVehicle(c)
     pcall(function() Game.GetVehicleSystem():EnablePlayerVehicle(c.id, true, false) end)
 end
+-- armed first (mounted weapons), then bike; everything else is a car (same split as FindMyRide)
 local VEH_GROUPS = {
-    order = { "vall" },
-    map = { V = "vall" },
-    typeOf = function() return "V" end,
+    order = { "vcars", "vbikes", "varmed" },
+    map = { car = "vcars", bike = "vbikes", armed = "varmed" },
+    typeOf = function(rec)
+        local armed = false
+        pcall(function() armed = rec:VehDataPackageHandle():DriverCombat():Type().value == "MountedWeapons" end)
+        if armed then return "armed" end
+        local ty = ""
+        pcall(function() ty = rec:Type():Type().value end)
+        if ty == "Bike" then return "bike" end
+        return "car"
+    end,
     dedupe = true,
     give = unlockVehicle,
     btnKey = "unlockbtn",
@@ -1272,7 +1460,7 @@ local VEH_GROUPS = {
     allAction = function() pcall(function() Game.GetVehicleSystem():EnableAllPlayerVehicles() end) end,
 }
 local WEAPON_GROUPS = {
-    order = { "wpistols", "wsmgs", "wrifles", "wshotguns", "wlmg", "wsnipers", "wmelee", "wcyber", "areaother" },
+    order = { "wpistols", "wsmgs", "wrifles", "wshotguns", "wlmg", "wsnipers", "wmelee", "areaother" },
     map = {
         Wea_Handgun = "wpistols", Wea_Revolver = "wpistols",
         Wea_SubmachineGun = "wsmgs",
@@ -1284,10 +1472,10 @@ local WEAPON_GROUPS = {
         Wea_Axe = "wmelee", Wea_Chainsword = "wmelee", Wea_Hammer = "wmelee", Wea_OneHandedClub = "wmelee",
         Wea_TwoHandedClub = "wmelee", Wea_LongBlade = "wmelee", Wea_ShortBlade = "wmelee",
         Wea_Melee = "wmelee", Wea_Fists = "wmelee",
-        Cyb_MantisBlades = "wcyber", Cyb_StrongArms = "wcyber", Cyb_NanoWires = "wcyber", Cyb_Launcher = "wcyber",
     },
     typeOf = function(rec) return rec:ItemType():Type().value end,
-    skip = function(tv) return tv ~= nil and tv:find("^Wea_Vehicle") ~= nil end,
+    -- Cyb_ arm weapons live in the All cyberware tab (merged there), not here
+    skip = function(tv) return tv ~= nil and (tv:find("^Wea_Vehicle") ~= nil or tv:find("^Cyb_") ~= nil) end,
     dedupe = true,
 }
 local MODS_GROUPS = {
@@ -1307,11 +1495,6 @@ local MODS_GROUPS = {
     typeOf = function(rec) return rec:ItemType():Type().value end,
     strict = true,  -- everything that isn't a mapped part type is skipped, not bucketed into Other
     dedupe = true,
-}
-
-local QUALITY_RANK = {
-    Random = 1, Common = 2, CommonPlus = 3, Uncommon = 4, UncommonPlus = 5, Rare = 6,
-    RarePlus = 7, Epic = 8, EpicPlus = 9, Legendary = 10, LegendaryPlus = 11, LegendaryPlusPlus = 12,
 }
 
 local dynLists = {}
@@ -1338,9 +1521,9 @@ local function buildDynList(key, recordTypes, def)
                     g = "areaother"
                 end
                 local entry = { label = name, id = rec:GetID(), give = def.give, btnKey = def.btnKey, doneKey = def.doneKey }
+                local rank = recordRank(rec)
+                entry.rank = rank
                 if def.dedupe then
-                    local rank = 0
-                    pcall(function() rank = QUALITY_RANK[rec:Quality():Name().value] or 0 end)
                     local dk = g .. "|" .. name
                     if best[dk] == nil then
                         groups[g] = groups[g] or {}
@@ -1349,6 +1532,7 @@ local function buildDynList(key, recordTypes, def)
                         count = count + 1
                     elseif rank > best[dk].rank then
                         best[dk].entry.id = entry.id
+                        best[dk].entry.rank = rank
                         best[dk].rank = rank
                     end
                 else
@@ -1358,7 +1542,7 @@ local function buildDynList(key, recordTypes, def)
                 end
             end)
         end
-        if count > 0 then break end
+        if count > 0 and not def.merge then break end
     end
     for _, list in pairs(groups) do
         total = total + #list
@@ -1386,12 +1570,12 @@ local function dynRow(c, uid)
         notify(c.doneKey and (c.label .. " " .. t(c.doneKey)) or ("+1 " .. c.label))
     end
     ImGui.SameLine()
-    ImGui.Text(c.label)
+    itemLabel(c.label, c.rank)
 end
 
 local function drawDynTab(id, data, allLabel, warnText)
     ImGui.TextWrapped(warnText)
-    if ImGui.Button(allLabel .. " (" .. data.total .. ")", -1, 28) then
+    if ImGui.Button(allLabel .. " (" .. data.total .. ")", -1, 28 * (settings.uiscale or 1)) then
         if data.allAction then
             data.allAction()
             notify(allLabel)
@@ -1408,34 +1592,59 @@ local function drawDynTab(id, data, allLabel, warnText)
         end
     end
     ImGui.Separator()
-    ImGui.SetNextItemWidth(220)
+    ImGui.SetNextItemWidth(220 * (settings.uiscale or 1))
     local text, changed = ImGui.InputTextWithHint("##filter" .. id, t("search"), filters[id] or "", 64)
     if changed then filters[id] = text end
     local needle = (filters[id] or ""):lower()
     if needle ~= "" then
-        -- flat result list, capped so ImGui doesn't choke on huge matches
-        local found = 0
+        -- flat result list, display capped so ImGui doesn't choke on huge matches
+        local toks = searchTokens(needle)
+        local matches = {}
         for _, g in ipairs(data.order) do
             for i, c in ipairs(data.groups[g] or {}) do
-                if c.label:lower():find(needle, 1, true) then
-                    found = found + 1
-                    if found <= 300 then dynRow(c, id .. g .. i) end
-                end
+                if matchesAll(c.label, toks) then matches[#matches + 1] = { c = c, g = g, i = i } end
             end
         end
-        if found == 0 then ImGui.Text(t("noresults")) end
+        if #matches == 0 then ImGui.Text(t("noresults")); return end
+        ImGui.Text(#matches .. " " .. t("results") .. (#matches > 300 and " " .. t("showing300") or ""))
+        ImGui.SameLine()
+        if ImGui.Button(t("giveallres") .. "##" .. id) then
+            for _, m in ipairs(matches) do giveDynItem(m.c) end
+            lastGive = nil
+            notify("+" .. #matches .. " " .. t("itemsgiven"))
+        end
+        local z = beginList(id .. "f")
+        for n, m in ipairs(matches) do
+            if n > 300 then break end
+            listRow(z)
+            dynRow(m.c, id .. m.g .. m.i)
+            ImGui.SameLine()
+            ImGui.TextColored(0.62, 0.62, 0.64, 1.0, t(m.g))
+        end
+        endList(z)
         return
+    end
+    -- single-group tabs (vehicles): flat list, the top button already covers "all"
+    local nGroups = 0
+    for _, g in ipairs(data.order) do
+        if data.groups[g] and #data.groups[g] > 0 then nGroups = nGroups + 1 end
     end
     for _, g in ipairs(data.order) do
         local list = data.groups[g]
         if list and #list > 0 then
-            if ImGui.CollapsingHeader(t(g) .. " (" .. #list .. ")##" .. id .. g) then
+            if nGroups == 1 then
+                local z = beginList(id .. g)
+                for i, c in ipairs(list) do listRow(z); dynRow(c, id .. g .. i) end
+                endList(z)
+            elseif ImGui.CollapsingHeader(t(g) .. " (" .. #list .. ")##" .. id .. g) then
                 if ImGui.Button(t("giveall") .. "##" .. id .. g) then
                     for _, c in ipairs(list) do giveDynItem(c) end
                     lastGive = nil
                     notify("+" .. #list .. " " .. t("itemsgiven"))
                 end
-                for i, c in ipairs(list) do dynRow(c, id .. g .. i) end
+                local z = beginList(id .. g)
+                for i, c in ipairs(list) do listRow(z); dynRow(c, id .. g .. i) end
+                endList(z)
             end
         end
     end
@@ -1586,10 +1795,12 @@ end
 
 local function drawUnlocksTab()
     if ImGui.CollapsingHeader(t("romances"), OPEN) then
+        beginList("rom")
         romanceRow("Judy", "judy_romanceable")
         romanceRow("Panam", "panam_romanceable")
         romanceRow("River", "river_romanceable")
         romanceRow("Kerry", "kerry_romanceable")
+        endList()
     end
     if ImGui.CollapsingHeader(t("recipes"), OPEN) then
         if ImGui.Button(t("recipesall")) then unlockAllRecipes() end
@@ -1605,28 +1816,33 @@ end
 local SRC_DEF = {
     aw  = { "gamedataWeaponItem_Record", WEAPON_GROUPS },
     c   = { "gamedataClothing_Record", CLOTH_GROUPS },
-    cyb = { "gamedataItem_Record", CYBER_GROUPS },
+    cyb = { { "gamedataItem_Record", "gamedataWeaponItem_Record" }, CYBER_GROUPS },
     m   = { { "gamedataAttachment_Record", "gamedataItem_Record" }, MODS_GROUPS },
     veh = { "gamedataVehicle_Record", VEH_GROUPS },
 }
 
+-- origin tab shown as a gray tag on each global search result
+local SRC_TAB = { aw = "taballweapons", c = "tabclothes", cyb = "tcaw", m = "tabmods", veh = "vehicles" }
+local STATIC_TAB = { "tabweapons", "tabgear" }
+
 local function searchAll(needle)
+    local toks = searchTokens(needle)
     local results = {}
     for src, d in pairs(SRC_DEF) do
         local data = buildDynList(src, d[1], d[2])
         for _, list in pairs(data.groups) do
             for _, c in ipairs(list) do
-                if c.label:lower():find(needle, 1, true) then
-                    results[#results + 1] = { label = c.label, entry = c, src = src }
+                if matchesAll(c.label, toks) then
+                    results[#results + 1] = { label = c.label, entry = c, src = src, tag = SRC_TAB[src] }
                 end
             end
         end
     end
-    for _, list in ipairs({ WEAPONS, GEAR }) do
+    for li, list in ipairs({ WEAPONS, GEAR }) do
         for _, group in ipairs(list) do
             for _, w in ipairs(group.weapons) do
-                if w.id and w.label:lower():find(needle, 1, true) then
-                    results[#results + 1] = { label = w.label, id = w.id, src = "static" }
+                if w.id and matchesAll(w.label, toks) then
+                    results[#results + 1] = { label = w.label, id = w.id, src = "static", tag = STATIC_TAB[li] }
                 end
             end
         end
@@ -1691,25 +1907,41 @@ end
 
 local function drawSearchTab()
     if #settings.favorites > 0 and ImGui.CollapsingHeader(t("favorites") .. " (" .. #settings.favorites .. ")", OPEN) then
+        local z = beginList("fav")
         for i = #settings.favorites, 1, -1 do
             local f = settings.favorites[i]
+            listRow(z)
             if ImGui.Button(t("give") .. "##fg" .. i) then giveFav(f) end
             ImGui.SameLine()
             if ImGui.Button(t("rmfav") .. "##fx" .. i) then toggleFav(f.src, f.label) end
             ImGui.SameLine()
             ImGui.Text(f.label)
         end
+        endList(z)
         ImGui.Separator()
     end
-    ImGui.SetNextItemWidth(260)
+    ImGui.SetNextItemWidth(260 * (settings.uiscale or 1))
     local text, changed = ImGui.InputTextWithHint("##gsearch", t("searchall"), filters.g or "", 64)
     if changed then filters.g = text end
     local needle = (filters.g or ""):lower()
     if needle == "" then ImGui.TextWrapped(t("searchhint")); return end
     local results = searchAll(needle)
     if #results == 0 then ImGui.Text(t("noresults")); return end
+    ImGui.Text(#results .. " " .. t("results") .. (#results > 300 and " " .. t("showing300") or ""))
+    ImGui.SameLine()
+    if ImGui.Button(t("giveallres") .. "##gall") then
+        for _, r in ipairs(results) do
+            -- silent path: giveResult would toast once per item
+            if r.src == "static" then Game.AddToInventory(r.id, 1)
+            else giveDynItem(r.entry) end
+        end
+        lastGive = nil
+        notify("+" .. #results .. " " .. t("itemsgiven"))
+    end
+    local z = beginList("gsr")
     for i, r in ipairs(results) do
         if i > 300 then break end
+        listRow(z)
         if ImGui.Button(t("give") .. "##g" .. i) then giveResult(r) end
         ImGui.SameLine()
         local fav = isFav(r.src, r.label)
@@ -1717,8 +1949,13 @@ local function drawSearchTab()
             toggleFav(r.src, r.label, r.id)
         end
         ImGui.SameLine()
-        ImGui.Text(r.label)
+        itemLabel(r.label, r.entry and r.entry.rank or staticRank(r.id))
+        if r.tag then
+            ImGui.SameLine()
+            ImGui.TextColored(0.62, 0.62, 0.64, 1.0, t(r.tag))
+        end
     end
+    endList(z)
 end
 
 -- Quest guide: static curated list separating real main story from side jobs that
@@ -1874,10 +2111,10 @@ end
 -- one unified list: grouped by category (Principal/Afeta o final/Cosmetica); each row is
 -- colored by its live state and shows the state word; Localizar on anything not done.
 local function drawQuestsTab()
-    ImGui.SetNextItemWidth(260)
+    ImGui.SetNextItemWidth(260 * (settings.uiscale or 1))
     local text, changed = ImGui.InputTextWithHint("##qsearch", t("search"), filters.q or "", 64)
     if changed then filters.q = text end
-    local needle = (filters.q or ""):lower()
+    local qtoks = searchTokens(filters.q or "")
     ImGui.SameLine()
     if ImGui.Button(t("qrefresh")) then questCache = nil end
     for i, c in ipairs(CAT_ORDER) do
@@ -1901,19 +2138,29 @@ local function drawQuestsTab()
     if questCache == nil or #questCache == 0 then questCache = buildQuestList() end
     if #questCache == 0 then ImGui.TextWrapped(t("qreadfail")); return end
 
+    if #qtoks > 0 then
+        local n = 0
+        for _, q in ipairs(questCache) do
+            if qcatShow[q.cat] and qsShow[q.state] and matchesAll(q.name, qtoks) then n = n + 1 end
+        end
+        ImGui.Text(n .. " " .. t("results"))
+    end
+
     for _, c in ipairs(CAT_ORDER) do
         if qcatShow[c] then
             local rows = {}
             for i, q in ipairs(questCache) do
                 if q.cat == c and qsShow[q.state]
-                    and (needle == "" or q.name:lower():find(needle, 1, true)) then
+                    and (#qtoks == 0 or matchesAll(q.name, qtoks)) then
                     rows[#rows + 1] = { q = q, i = i }
                 end
             end
             if #rows > 0 then
                 local cc = QCAT[c]
                 if ImGui.CollapsingHeader(t(cc.key) .. " (" .. #rows .. ")", OPEN) then
+                    local z = beginList("q" .. c)
                     for _, e in ipairs(rows) do
+                        listRow(z)
                         local sm = stateMeta(e.q.state)
                         if e.q.state ~= 3 then
                             if ImGui.Button(t("qlocate") .. "##ql" .. e.i) then locateQuest(e.q.entry) end
@@ -1923,6 +2170,7 @@ local function drawQuestsTab()
                         ImGui.SameLine()
                         ImGui.TextDisabled(t(sm.key))
                     end
+                    endList(z)
                 end
             end
         end
@@ -1955,7 +2203,10 @@ local function pushTheme()
     ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0)
     ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
     ImGui.PushStyleVar(ImGuiStyleVar.TabRounding, 0)
-    return 21, 3
+    local s = settings.uiscale or 1
+    ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 8 * s, 5 * s)
+    ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 8 * s, 6 * s)
+    return 21, 5
 end
 
 registerForEvent("onDraw", function()
@@ -1967,6 +2218,7 @@ registerForEvent("onDraw", function()
         ImGui.PopStyleVar(nVar)
         return
     end
+    ImGui.SetWindowFontScale(settings.uiscale or 1.0)
 
     if ImGui.BeginTabBar("##gmetabs") then
         if ImGui.BeginTabItem(t("tabsearch")) then
@@ -2006,7 +2258,7 @@ registerForEvent("onDraw", function()
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem(t("tcaw")) then
-            drawDynTab("cyb", buildDynList("cyb", "gamedataItem_Record", CYBER_GROUPS), t("cawall"), t("cawwarn"))
+            drawDynTab("cyb", buildDynList("cyb", { "gamedataItem_Record", "gamedataWeaponItem_Record" }, CYBER_GROUPS), t("cawall"), t("cawwarn"))
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem(t("vehicles")) then
@@ -2027,6 +2279,13 @@ registerForEvent("onDraw", function()
         end
         ImGui.EndTabBar()
     end
+
+    ImGui.Separator()
+    ImGui.SetNextItemWidth(140 * (settings.uiscale or 1))
+    local sc, scch = ImGui.SliderFloat("##uiscale", settings.uiscale or 1.0, 0.8, 1.6, "%.1fx")
+    if scch then settings.uiscale = sc; saveSettings() end
+    ImGui.SameLine()
+    ImGui.TextColored(0.62, 0.62, 0.64, 1.0, t("uiscale"))
 
     ImGui.End()
     ImGui.PopStyleColor(nCol)
