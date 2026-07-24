@@ -14,7 +14,14 @@ public final static func CanPartBeUnequipped(data: InventoryItemData, slotId: Tw
 }
 
 // Parts worth saving: mods plus the attachments vanilla already lets you detach.
-func UnequipModsIsRemovablePart(type: gamedataItemType) -> Bool {
+// Loot-generated weapons carry DummyBlankMod placeholders (typed as mods) that
+// occupy hidden slots — extracting those creates blank items, so skip them.
+func UnequipModsIsRemovablePart(id: ItemID) -> Bool {
+  let record = TweakDBInterface.GetItemRecord(ItemID.GetTDBID(id));
+  if !IsDefined(record) || record.TagsContains(n"DummyPart") || record.TagsContains(n"HideInUI") {
+    return false;
+  };
+  let type = RPGManager.GetItemType(id);
   if RPGManager.IsWeaponMod(type) || RPGManager.IsClothingMod(type) {
     return true;
   };
@@ -41,8 +48,7 @@ func UnequipModsStripParts(game: GameInstance, owner: wref<GameObject>, itemID: 
   for slot in usedSlots {
     let partData: InnerItemData;
     itemData.GetItemPart(partData, slot);
-    let partType = RPGManager.GetItemType(InnerItemData.GetItemID(partData));
-    if UnequipModsIsRemovablePart(partType) {
+    if UnequipModsIsRemovablePart(InnerItemData.GetItemID(partData)) {
       ts.RemovePart(owner, itemID, slot);
       count += 1;
     };
