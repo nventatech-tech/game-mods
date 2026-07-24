@@ -59,6 +59,10 @@ local L = {
         qualrare     = "Rare",
         qualepic     = "Epic",
         quallegend   = "Legendary / Iconic",
+        qualleg5     = "Legendary",
+        rarity       = "Item rarity",
+        raritydef    = "Game default",
+        rarityhint   = "Rarity applied to items this mod gives. Game default keeps each item's normal tier.",
         uiscale      = "UI scale",
         vcars        = "Cars",
         vbikes       = "Motorcycles",
@@ -232,6 +236,10 @@ local L = {
         qualrare     = "Raro",
         qualepic     = "Épico",
         quallegend   = "Lendário / Icônico",
+        qualleg5     = "Lendário",
+        rarity       = "Raridade dos itens",
+        raritydef    = "Padrão do jogo",
+        rarityhint   = "Raridade aplicada aos itens que o mod dá. Padrão do jogo mantém o tier normal de cada item.",
         uiscale      = "Escala da interface",
         vcars        = "Carros",
         vbikes       = "Motos",
@@ -351,7 +359,14 @@ local L = {
 
 -- settings.json holds lang + multipliers; lang.txt kept as read-only fallback (pre-1.2.0)
 local settings = { lang = "en", xpmult = 1, dmgmult = 1, carrybonus = 0, uiscale = 1.0,
-    god = false, stamina = false, infammo = false, oneshot = false, favorites = {} }
+    god = false, stamina = false, infammo = false, oneshot = false, rarity = "default", favorites = {} }
+
+-- rarity override: quality records the spawn wrapper can force on given items
+local RARITY_REC = {
+    common = "Quality.Common", uncommon = "Quality.Uncommon", rare = "Quality.Rare",
+    epic = "Quality.Epic", legendary = "Quality.Legendary",
+    legendaryplus = "Quality.LegendaryPlus", legendaryplusplus = "Quality.LegendaryPlusPlus",
+}
 
 local function t(key) return L[settings.lang][key] or L.en[key] or key end
 
@@ -379,6 +394,9 @@ local function loadSettings()
             if c and c >= 0 and c <= 50000 then settings.carrybonus = math.floor(c) end
             local u = tonumber(saved.uiscale)
             if u and u >= 0.8 and u <= 1.6 then settings.uiscale = u end
+            if type(saved.rarity) == "string" and (saved.rarity == "default" or RARITY_REC[saved.rarity]) then
+                settings.rarity = saved.rarity
+            end
             settings.god = saved.god == true
             settings.stamina = saved.stamina == true
             settings.infammo = saved.infammo == true
@@ -767,8 +785,49 @@ registerForEvent("onInit", function()
     if settings.dmgmult > 1 or settings.carrybonus > 0 or settings.oneshot then statPending = 2.0 end
 end)
 
+-- rarity override: swap the record's quality flat before spawning, restore a bit later
+-- (the spawn can resolve a frame+ after AddToInventory, so restoring immediately misses)
+local qualityRestore = {}
+local function applyRarity(id)
+    local rec = RARITY_REC[settings.rarity]
+    if not rec then return end
+    pcall(function()
+        local key = tostring(id)
+        local flat = (type(id) == "string") and (id .. ".quality") or TweakDBID.new(id, ".quality")
+        local e = qualityRestore[key]
+        if not e then
+            local old = TweakDB:GetFlat(flat)
+            if old == nil then return end
+            e = { flat = flat, id = id, old = old }
+            qualityRestore[key] = e
+        end
+        e.t = 2.0
+        TweakDB:SetFlat(flat, TweakDBID.new(rec))
+        TweakDB:Update(id)
+    end)
+end
+
+local function spawnItem(id, qty)
+    applyRarity(id)
+    if type(id) == "string" then
+        Game.AddToInventory(id, qty or 1)
+    else
+        Game.GetTransactionSystem():GiveItem(Game.GetPlayer(), ItemID.FromTDBID(id), qty or 1)
+    end
+end
+
 local ammoAcc = 0
 registerForEvent("onUpdate", function(dt)
+    for key, e in pairs(qualityRestore) do
+        e.t = e.t - dt
+        if e.t <= 0 then
+            pcall(function()
+                TweakDB:SetFlat(e.flat, e.old)
+                TweakDB:Update(e.id)
+            end)
+            qualityRestore[key] = nil
+        end
+    end
     if statPending > 0 then
         statPending = statPending - dt
         if statPending <= 0 then
@@ -865,7 +924,7 @@ function refreshOwned()
 end
 
 local function giveWeapon(w)
-    Game.AddToInventory(w.id, 1)
+    spawnItem(w.id, 1)
     ownedCache[w.id] = true
     notify("+1 " .. w.label)
     lastGive = { label = w.label, undo = function()
@@ -964,7 +1023,7 @@ local function giveEverything()
         for _, group in ipairs(list) do
             for _, w in ipairs(group.weapons) do
                 if w.id and not ownedCache[w.id] then
-                    Game.AddToInventory(w.id, 1)
+                    spawnItem(w.id, 1)
                     ownedCache[w.id] = true
                     n = n + 1
                 end
@@ -1308,6 +1367,13 @@ local function rankName(rank)
     return t("qualcommon")
 end
 
+-- with a rarity override active, list colors show what the item will spawn as
+local RARITY_RANK = { common = 1, uncommon = 4, rare = 6, epic = 8,
+    legendary = 10, legendaryplus = 10, legendaryplusplus = 10 }
+local function effRank(rank)
+    return RARITY_RANK[settings.rarity] or rank
+end
+
 -- extra: optional second tooltip line (static tabs pass the TweakDB id)
 local function itemLabel(label, rank, extra)
     rank = rank or 0
@@ -1328,7 +1394,7 @@ local function weaponRow(w)
         giveWeapon(w)
     end
     ImGui.SameLine(120 * (settings.uiscale or 1))
-    itemLabel(w.label, staticRank(w.id), w.id)
+    itemLabel(w.label, effRank(staticRank(w.id)), w.id)
 end
 
 local filters = {}
@@ -1372,7 +1438,7 @@ local function drawGearList(id, groups)
             local n = 0
             for _, w in ipairs(matches) do
                 if not ownedCache[w.id] then
-                    Game.AddToInventory(w.id, 1)
+                    spawnItem(w.id, 1)
                     ownedCache[w.id] = true
                     n = n + 1
                 end
@@ -1391,7 +1457,7 @@ local function drawGearList(id, groups)
                 local n = 0
                 for _, w in ipairs(group.weapons) do
                     if w.id and not ownedCache[w.id] then
-                        Game.AddToInventory(w.id, 1)
+                        spawnItem(w.id, 1)
                         ownedCache[w.id] = true
                         n = n + 1
                     end
@@ -1556,7 +1622,7 @@ end
 local function giveDynItem(c)
     if c.give then c.give(c)
     else
-        Game.GetTransactionSystem():GiveItem(Game.GetPlayer(), ItemID.FromTDBID(c.id), 1)
+        spawnItem(c.id, 1)
         lastGive = { label = c.label, undo = function()
             Game.GetTransactionSystem():RemoveItem(Game.GetPlayer(), ItemID.FromTDBID(c.id), 1)
         end }
@@ -1570,7 +1636,7 @@ local function dynRow(c, uid)
         notify(c.doneKey and (c.label .. " " .. t(c.doneKey)) or ("+1 " .. c.label))
     end
     ImGui.SameLine()
-    itemLabel(c.label, c.rank)
+    itemLabel(c.label, c.give and c.rank or effRank(c.rank))
 end
 
 local function drawDynTab(id, data, allLabel, warnText)
@@ -1869,7 +1935,7 @@ local function toggleFav(src, label, id)
 end
 
 local function giveStatic(id, label)
-    Game.AddToInventory(id, 1)
+    spawnItem(id, 1)
     lastGive = { label = label, undo = function()
         Game.GetTransactionSystem():RemoveItem(Game.GetPlayer(), ItemID.FromTDBID(TweakDBID.new(id)), 1)
     end }
@@ -1932,7 +1998,7 @@ local function drawSearchTab()
     if ImGui.Button(t("giveallres") .. "##gall") then
         for _, r in ipairs(results) do
             -- silent path: giveResult would toast once per item
-            if r.src == "static" then Game.AddToInventory(r.id, 1)
+            if r.src == "static" then spawnItem(r.id, 1)
             else giveDynItem(r.entry) end
         end
         lastGive = nil
@@ -1949,7 +2015,7 @@ local function drawSearchTab()
             toggleFav(r.src, r.label, r.id)
         end
         ImGui.SameLine()
-        itemLabel(r.label, r.entry and r.entry.rank or staticRank(r.id))
+        itemLabel(r.label, r.entry and (r.entry.give and r.entry.rank or effRank(r.entry.rank)) or effRank(staticRank(r.id)))
         if r.tag then
             ImGui.SameLine()
             ImGui.TextColored(0.62, 0.62, 0.64, 1.0, t(r.tag))
@@ -2209,6 +2275,28 @@ local function pushTheme()
     return 21, 5
 end
 
+-- plus tiers only offered if their Quality records exist in this game version
+local rarityKeys
+local function rarityOptions()
+    if not rarityKeys then
+        rarityKeys = { "default", "common", "uncommon", "rare", "epic", "legendary" }
+        for _, k in ipairs({ "legendaryplus", "legendaryplusplus" }) do
+            local ok, r = pcall(function() return TweakDB:GetRecord(RARITY_REC[k]) end)
+            if ok and r then rarityKeys[#rarityKeys + 1] = k end
+        end
+    end
+    return rarityKeys
+end
+
+local RARITY_TIER = { common = 1, uncommon = 2, rare = 3, epic = 4, legendary = 5 }
+local function rarityLabel(k)
+    if k == "default" then return t("raritydef") end
+    if k == "legendaryplus" then return "Tier 5+" end
+    if k == "legendaryplusplus" then return "Tier 5++" end
+    local qual = (k == "legendary") and t("qualleg5") or t("qual" .. k)
+    return "Tier " .. RARITY_TIER[k] .. " - " .. qual
+end
+
 registerForEvent("onDraw", function()
     if not overlayOpen then return end
     local nCol, nVar = pushTheme()
@@ -2281,6 +2369,18 @@ registerForEvent("onDraw", function()
     end
 
     ImGui.Separator()
+    local keys = rarityOptions()
+    local opts, cur = {}, 0
+    for i, k in ipairs(keys) do
+        opts[i] = rarityLabel(k)
+        if k == settings.rarity then cur = i - 1 end
+    end
+    ImGui.SetNextItemWidth(170 * (settings.uiscale or 1))
+    local rsel, rch = ImGui.Combo("##rarity", cur, opts, #opts)
+    if ImGui.IsItemHovered() then ImGui.SetTooltip(t("rarityhint")) end
+    if rch then settings.rarity = keys[rsel + 1]; saveSettings() end
+    ImGui.SameLine()
+    ImGui.TextColored(0.62, 0.62, 0.64, 1.0, t("rarity"))
     ImGui.SetNextItemWidth(140 * (settings.uiscale or 1))
     local sc, scch = ImGui.SliderFloat("##uiscale", settings.uiscale or 1.0, 0.8, 1.6, "%.1fx")
     if scch then settings.uiscale = sc; saveSettings() end
