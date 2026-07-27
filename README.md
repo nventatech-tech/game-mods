@@ -40,3 +40,7 @@ mod manager layout: `BepInEx/plugins/<Mod>.dll` for BepInEx games, flat dll for
 MelonLoader, game-specific trees for Cyberpunk. Extract into the game folder or
 install with Vortex / Mod Organizer 2. Brotato mods are distributed via Steam
 Workshop (subscribe to install); the zip here is the uploaded package.
+
+Nine Sols needs `HideManagerGameObject = true` in `BepInEx/config/BepInEx.cfg`.
+With the default value the game destroys the BepInEx object on the first scene
+change — plugins load, then stop running. The pack zip ships the correct config.
