@@ -1,17 +1,19 @@
-# CultOfQoL PT-BR Configuration Manager Addon
+# Cult of QoL PT-BR
 
-Addon BepInEx separado para traduzir a exibição do `CultOfQoL.dll` no Configuration Manager, sem alterar o mod original.
+Traduz para português (BR) as opções do Cult of QoL Collection no Configuration Manager. Addon separado - não altera o mod original.
 
-## 🔨 Build no CachyOS/fish
+![Cult of QoL PT-BR](screenshots/cover.png)
 
-```fish
-set -gx COTL "/mnt/files/SteamLibrary/steamapps/common/Cult of the Lamb"
-cd ~/Documentos/Mods/CultOfTheLamb/CultOfQoL_PTBR
+## Features
 
-dotnet restore /p:GameDir="$COTL"
-dotnet build -c Release /p:GameDir="$COTL"
+- All Cult of QoL settings in PT-BR
+- Separate addon - original untouched
+- Works in Configuration Manager
 
-cp bin/Release/CultOfQoL_PTBR.dll "$COTL/BepInEx/plugins/"
-```
+## Install
 
-Depois abra o jogo e o Configuration Manager. As opções do CultOfQoL devem aparecer em PT-BR.
+Download on [Nexus Mods](https://www.nexusmods.com/cultofthelamb/mods/84). Extract into the game folder - the DLL lands in `BepInEx/plugins/`. Requires BepInEx 5.
+
+## Support
+
+If this mod helped you: [donate via PayPal](https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD).
