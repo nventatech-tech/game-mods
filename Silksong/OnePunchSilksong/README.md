@@ -13,7 +13,7 @@ Needle and skill damage up to one-hit kill, immortality, infinite jumps and silk
 
 ## Install
 
-Download on [Nexus Mods](https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods). Extract into the game folder - the DLL lands in `BepInEx/plugins/`. Requires BepInEx 5.
+Download on [Nexus Mods](https://www.nexusmods.com/hollowknightsilksong/mods/1215). Extract into the game folder - the DLL lands in `BepInEx/plugins/`. Requires BepInEx 5.
 
 ## Support
 

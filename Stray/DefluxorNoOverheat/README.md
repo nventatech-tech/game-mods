@@ -12,7 +12,7 @@ The Defluxor never overheats - keep it on as long as you want. Keyboard and cont
 
 ## Install
 
-Download on [Nexus Mods](https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods). Extract into the game folder - the DLL lands in `BepInEx/plugins/`. Requires BepInEx 5.
+Download on [Nexus Mods](https://www.nexusmods.com/stray/mods/390). Extract into the game folder - the DLL lands in `BepInEx/plugins/`. Requires BepInEx 5.
 
 ## Support
 

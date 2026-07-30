@@ -18,7 +18,7 @@ published on Nexus / Workshop), screenshots and a short README.
 | [UnequipMods](CyberPunk/UnequipMods) | Cyberpunk 2077 | redscript | [31701](https://www.nexusmods.com/cyberpunk2077/mods/31701) |
 | [QuestGuide](CyberPunk/QuestGuide) | Cyberpunk 2077 | redscript | [31784](https://www.nexusmods.com/cyberpunk2077/mods/31784) |
 | [OnePunchHK](Hollow%20Knight/OnePunchHK) | Hollow Knight | BepInEx 5 | [193](https://www.nexusmods.com/hollowknight/mods/193) |
-| [OnePunchSilksong](Silksong/OnePunchSilksong) | Hollow Knight: Silksong | BepInEx 5 | [Nexus](https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods) |
+| [OnePunchSilksong](Silksong/OnePunchSilksong) | Hollow Knight: Silksong | BepInEx 5 | [1215](https://www.nexusmods.com/hollowknightsilksong/mods/1215) |
 | [CupheadDoubleAssist](Cuphead/CupheadDoubleAssist) | Cuphead | BepInEx 5 | [115](https://www.nexusmods.com/cuphead/mods/115) |
 | [CupheadUltraWideBepInEx](Cuphead/CupheadUltraWideBepInEx) | Cuphead | BepInEx 5 | [122](https://www.nexusmods.com/cuphead/mods/122) |
 | [BepInEx for Cuphead](Cuphead/Bepinex) | Cuphead | pack | [173](https://www.nexusmods.com/cuphead/mods/173) |
@@ -27,7 +27,7 @@ published on Nexus / Workshop), screenshots and a short README.
 | [CultOfQoL_PTBR](CultOfTheLamb/CultOfQoL_PTBR) | Cult of the Lamb | BepInEx 5 | [84](https://www.nexusmods.com/cultofthelamb/mods/84) |
 | [UltraCleaningTools](CrimeSceneCleaner/UltraCleaningTools) | Crime Scene Cleaner | MelonLoader | [10](https://www.nexusmods.com/crimescenecleaner/mods/10) |
 | [MouseTrainer](MOUSE/MouseTrainer) | MOUSE: P.I. For Hire | BepInEx 5 | [23](https://www.nexusmods.com/mousepiforhire/mods/23) |
-| [DefluxorNoOverheat](Stray/DefluxorNoOverheat) | Stray | BepInEx 5 | [Nexus](https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods) |
+| [DefluxorNoOverheat](Stray/DefluxorNoOverheat) | Stray | BepInEx 5 | [390](https://www.nexusmods.com/stray/mods/390) |
 | [ShopWishlist](Brotato/ShopWishlist) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3771061737) |
 | [ModOptionsTabs](Brotato/ModOptionsTabs) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769887447) |
 | [EnemiesEvolve](Brotato/EnemiesEvolve) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769878400) |
