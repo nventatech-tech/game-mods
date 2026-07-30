@@ -1,7 +1,7 @@
 # Game Mods
 
 [![Nexus Mods](https://img.shields.io/badge/Nexus%20Mods-opaaaaaaaaaaaa-orange?logo=nexusmods)](https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods)
-[![Steam Workshop](https://img.shields.io/badge/Steam-Workshop-blue?logo=steam)](https://steamcommunity.com/id/opaaaaaaaaaaaa/myworkshopfiles/)
+[![Steam Workshop](https://img.shields.io/badge/Steam-Workshop-blue?logo=steam)](https://steamcommunity.com/profiles/76561198982807823/myworkshopfiles/)
 [![BepInEx](https://img.shields.io/badge/framework-BepInEx%205-blue)](https://github.com/BepInEx/BepInEx)
 [![MelonLoader](https://img.shields.io/badge/framework-MelonLoader-green)](https://melonwiki.xyz/)
 
