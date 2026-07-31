@@ -58,4 +58,4 @@ adjust to your install or pass `/p:GameDir=...`.
 
 If a mod helped you, consider [donating via PayPal](https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD).
 
-[![Donate](https://raw.githubusercontent.com/nventatech-tech/cctop/main/contents/images/donate-qr.png)](https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD)
+[![Donate](https://raw.githubusercontent.com/nventatech/cctop/main/contents/images/donate-qr.png)](https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD)

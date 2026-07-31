@@ -6,8 +6,9 @@ Text search and category filters (All, Favorites, Cars, Motorcycles, Armed) insi
 
 ## Features
 
-- Text search in the vehicle call menu
-- All / Favorites / Cars / Motorcycles / Armed categories
+- Text search in the vehicle call menu, by name or manufacturer
+- All / Favorites / Cars / Motorcycles / Armed categories, last one remembered
+- Hides the vanilla "still in Beta" disclaimer
 - Native UI - no extra windows
 - English & PT-BR
 
