@@ -15,4 +15,4 @@ Drop `NoDurability-x.y.z.jar` into your Mods folder:
 Singleplayer works out of the box; on multiplayer servers only the server needs it.
 
 ## Support
-If this mod saved your favorite pickaxe: [PayPal](https://www.paypal.com/donate/?hosted_button_id=SR28XBBCYSPHE)
+If this mod saved your favorite pickaxe: [PayPal](https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD)
