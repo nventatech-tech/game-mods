@@ -2,6 +2,7 @@
 
 [![Nexus Mods](https://img.shields.io/badge/Nexus%20Mods-opaaaaaaaaaaaa-orange?logo=nexusmods)](https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods)
 [![Steam Workshop](https://img.shields.io/badge/Steam-Workshop-blue?logo=steam)](https://steamcommunity.com/profiles/76561198982807823/myworkshopfiles/)
+[![CurseForge](https://img.shields.io/badge/CurseForge-Hytale-F16436?logo=curseforge)](https://www.curseforge.com/hytale)
 [![BepInEx](https://img.shields.io/badge/framework-BepInEx%205-blue)](https://github.com/BepInEx/BepInEx)
 [![MelonLoader](https://img.shields.io/badge/framework-MelonLoader-green)](https://melonwiki.xyz/)
 
@@ -28,6 +29,8 @@ published on Nexus / Workshop), screenshots and a short README.
 | [UltraCleaningTools](CrimeSceneCleaner/UltraCleaningTools) | Crime Scene Cleaner | MelonLoader | [10](https://www.nexusmods.com/crimescenecleaner/mods/10) |
 | [MouseTrainer](MOUSE/MouseTrainer) | MOUSE: P.I. For Hire | BepInEx 5 | [23](https://www.nexusmods.com/mousepiforhire/mods/23) |
 | [DefluxorNoOverheat](Stray/DefluxorNoOverheat) | Stray | BepInEx 5 | [390](https://www.nexusmods.com/stray/mods/390) |
+| [NoDurability](Hytale/NoDurability) | Hytale | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/nodurability) |
+| [GodMode](Hytale/GodMode) | Hytale | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/god-mode-menu) |
 | [ShopWishlist](Brotato/ShopWishlist) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3771061737) |
 | [ModOptionsTabs](Brotato/ModOptionsTabs) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769887447) |
 | [EnemiesEvolve](Brotato/EnemiesEvolve) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769878400) |
@@ -38,6 +41,8 @@ Each zip is in the mod manager layout: `BepInEx/plugins/<Mod>.dll` for BepInEx g
 flat dll for MelonLoader, game-specific trees for Cyberpunk. Extract into the game
 folder or install with Vortex / Mod Organizer 2. Brotato mods are distributed via
 Steam Workshop (subscribe to install); the zip here is the uploaded package.
+Hytale mods install through the CurseForge app, or drop the jar (inside the zip)
+into `UserData/Mods` in the Hytale data folder.
 
 Nine Sols needs `HideManagerGameObject = true` in `BepInEx/config/BepInEx.cfg`.
 With the default value the game destroys the BepInEx object on the first scene
