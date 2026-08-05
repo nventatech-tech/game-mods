@@ -7,3 +7,5 @@
 !.gitignore
 Brotato/decompiled/
 Brotato/tools/
+*/*/resources/
+*/*/build/
