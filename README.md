@@ -47,35 +47,40 @@ Release zips and screenshots for my published game mods. Source lives locally, n
 | [NineSolsPowerMod](NineSols/NineSolsPowerMod) | BepInEx 5 | [16](https://www.nexusmods.com/ninesols/mods/16) |
 | [BepInEx pack for Nine Sols](NineSols/BepInExPack) | pack | [17](https://www.nexusmods.com/ninesols/mods/17) |
 
-### Other games
-| Mod | Game | Framework | Download |
-|-----|------|-----------|----------|
-| [OnePunchHK](Hollow%20Knight/OnePunchHK) | Hollow Knight | BepInEx 5 | [193](https://www.nexusmods.com/hollowknight/mods/193) |
-| [OnePunchSilksong](Silksong/OnePunchSilksong) | Hollow Knight: Silksong | BepInEx 5 | [1215](https://www.nexusmods.com/hollowknightsilksong/mods/1215) |
-| [CultOfQoL_PTBR](CultOfTheLamb/CultOfQoL_PTBR) | Cult of the Lamb | BepInEx 5 | [84](https://www.nexusmods.com/cultofthelamb/mods/84) |
-| [UltraCleaningTools](CrimeSceneCleaner/UltraCleaningTools) | Crime Scene Cleaner | MelonLoader | [10](https://www.nexusmods.com/crimescenecleaner/mods/10) |
-| [MouseTrainer](MOUSE/MouseTrainer) | MOUSE: P.I. For Hire | BepInEx 5 | [23](https://www.nexusmods.com/mousepiforhire/mods/23) |
-| [DefluxorNoOverheat](Stray/DefluxorNoOverheat) | Stray | BepInEx 5 | [390](https://www.nexusmods.com/stray/mods/390) |
-| [OfflineBots](TrickyTowers/OfflineBots) | Tricky Towers | BepInEx 5 (x86) | [7](https://www.nexusmods.com/trickytowers/mods/7) |
+### Hollow Knight
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [OnePunchHK](Hollow%20Knight/OnePunchHK) | BepInEx 5 | [193](https://www.nexusmods.com/hollowknight/mods/193) |
 
-## 📦 Install
+### Hollow Knight: Silksong
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [OnePunchSilksong](Silksong/OnePunchSilksong) | BepInEx 5 | [1215](https://www.nexusmods.com/hollowknightsilksong/mods/1215) |
 
-Each zip is in the mod manager layout: `BepInEx/plugins/<Mod>.dll` for BepInEx games,
-flat dll for MelonLoader, game-specific trees for Cyberpunk. Extract into the game
-folder or install with Vortex / Mod Organizer 2. Brotato mods are distributed via
-Steam Workshop (subscribe to install); the zip here is the uploaded package.
-Hytale mods install through the CurseForge app, or drop the jar (inside the zip)
-into `UserData/Mods` in the Hytale data folder.
+### Cult of the Lamb
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [CultOfQoL_PTBR](CultOfTheLamb/CultOfQoL_PTBR) | BepInEx 5 | [84](https://www.nexusmods.com/cultofthelamb/mods/84) |
 
-Nine Sols needs `HideManagerGameObject = true` in `BepInEx/config/BepInEx.cfg`.
-With the default value the game destroys the BepInEx object on the first scene
-change — plugins load, then stop running. The pack zip ships the correct config.
+### Crime Scene Cleaner
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [UltraCleaningTools](CrimeSceneCleaner/UltraCleaningTools) | MelonLoader | [10](https://www.nexusmods.com/crimescenecleaner/mods/10) |
 
-## 🔨 Build
+### MOUSE: P.I. For Hire
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [MouseTrainer](MOUSE/MouseTrainer) | BepInEx 5 | [23](https://www.nexusmods.com/mousepiforhire/mods/23) |
 
-C# mods: `dotnet build -c Release` in the mod folder. Game assembly references resolve
-from the game install path set in each `.csproj` (`GameDir`/`ManagedDir` properties) —
-adjust to your install or pass `/p:GameDir=...`.
+### Stray
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [DefluxorNoOverheat](Stray/DefluxorNoOverheat) | BepInEx 5 | [390](https://www.nexusmods.com/stray/mods/390) |
+
+### Tricky Towers
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [OfflineBots](TrickyTowers/OfflineBots) | BepInEx 5 (x86) | [7](https://www.nexusmods.com/trickytowers/mods/7) |
 
 ## ❤️ Support
 
