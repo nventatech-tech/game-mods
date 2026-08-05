@@ -1,40 +1,62 @@
 # Game Mods
 
+![cover](cover.png)
+
 [![Nexus Mods](https://img.shields.io/badge/Nexus%20Mods-opaaaaaaaaaaaa-orange?logo=nexusmods)](https://next.nexusmods.com/profile/opaaaaaaaaaaaa/mods)
 [![Steam Workshop](https://img.shields.io/badge/Steam-Workshop-blue?logo=steam)](https://steamcommunity.com/profiles/76561198982807823/myworkshopfiles/)
 [![CurseForge](https://img.shields.io/badge/CurseForge-Hytale-F16436?logo=curseforge)](https://www.curseforge.com/hytale)
-[![BepInEx](https://img.shields.io/badge/framework-BepInEx%205-blue)](https://github.com/BepInEx/BepInEx)
-[![MelonLoader](https://img.shields.io/badge/framework-MelonLoader-green)](https://melonwiki.xyz/)
+[![License](https://img.shields.io/badge/license-free-brightgreen)](#)
 
-Releases of my published game mods. Each folder has the release zip (the same file
-published on Nexus / Workshop), screenshots and a short README.
+Release zips and screenshots for my published game mods. Source lives locally, not in this repo.
 
 ## 🎮 Mods
 
+### Cyberpunk 2077
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [GiveMeEverything](CyberPunk/GiveMeEverything) | CET (Lua) | [31460](https://www.nexusmods.com/cyberpunk2077/mods/31460) |
+| [FindMyRide](CyberPunk/FindMyRide) | redscript | [31610](https://www.nexusmods.com/cyberpunk2077/mods/31610) |
+| [BestInSlot](CyberPunk/BestInSlot) | redscript | [31702](https://www.nexusmods.com/cyberpunk2077/mods/31702) |
+| [UnequipMods](CyberPunk/UnequipMods) | redscript | [31701](https://www.nexusmods.com/cyberpunk2077/mods/31701) |
+| [QuestGuide](CyberPunk/QuestGuide) | redscript | [31784](https://www.nexusmods.com/cyberpunk2077/mods/31784) |
+
+### Hytale
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [NoDurability](Hytale/NoDurability) | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/nodurability) |
+| [GodMode](Hytale/GodMode) | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/god-mode-menu) |
+| [VoidChest](Hytale/VoidChest) | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/void-chest) |
+
+### Brotato
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [ShopWishlist](Brotato/ShopWishlist) | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3771061737) |
+| [ModOptionsTabs](Brotato/ModOptionsTabs) | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769887447) |
+| [EnemiesEvolve](Brotato/EnemiesEvolve) | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769878400) |
+
+### Cuphead
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [CupheadDoubleAssist](Cuphead/CupheadDoubleAssist) | BepInEx 5 | [115](https://www.nexusmods.com/cuphead/mods/115) |
+| [CupheadUltraWideBepInEx](Cuphead/CupheadUltraWideBepInEx) | BepInEx 5 | [122](https://www.nexusmods.com/cuphead/mods/122) |
+| [BepInEx for Cuphead](Cuphead/Bepinex) | pack | [173](https://www.nexusmods.com/cuphead/mods/173) |
+
+### Nine Sols
+| Mod | Framework | Download |
+|-----|-----------|----------|
+| [NineSolsPowerMod](NineSols/NineSolsPowerMod) | BepInEx 5 | [16](https://www.nexusmods.com/ninesols/mods/16) |
+| [BepInEx pack for Nine Sols](NineSols/BepInExPack) | pack | [17](https://www.nexusmods.com/ninesols/mods/17) |
+
+### Other games
 | Mod | Game | Framework | Download |
 |-----|------|-----------|----------|
-| [GiveMeEverything](CyberPunk/GiveMeEverything) | Cyberpunk 2077 | CET (Lua) | [31460](https://www.nexusmods.com/cyberpunk2077/mods/31460) |
-| [FindMyRide](CyberPunk/FindMyRide) | Cyberpunk 2077 | redscript | [31610](https://www.nexusmods.com/cyberpunk2077/mods/31610) |
-| [BestInSlot](CyberPunk/BestInSlot) | Cyberpunk 2077 | redscript | [31702](https://www.nexusmods.com/cyberpunk2077/mods/31702) |
-| [UnequipMods](CyberPunk/UnequipMods) | Cyberpunk 2077 | redscript | [31701](https://www.nexusmods.com/cyberpunk2077/mods/31701) |
-| [QuestGuide](CyberPunk/QuestGuide) | Cyberpunk 2077 | redscript | [31784](https://www.nexusmods.com/cyberpunk2077/mods/31784) |
 | [OnePunchHK](Hollow%20Knight/OnePunchHK) | Hollow Knight | BepInEx 5 | [193](https://www.nexusmods.com/hollowknight/mods/193) |
 | [OnePunchSilksong](Silksong/OnePunchSilksong) | Hollow Knight: Silksong | BepInEx 5 | [1215](https://www.nexusmods.com/hollowknightsilksong/mods/1215) |
-| [CupheadDoubleAssist](Cuphead/CupheadDoubleAssist) | Cuphead | BepInEx 5 | [115](https://www.nexusmods.com/cuphead/mods/115) |
-| [CupheadUltraWideBepInEx](Cuphead/CupheadUltraWideBepInEx) | Cuphead | BepInEx 5 | [122](https://www.nexusmods.com/cuphead/mods/122) |
-| [BepInEx for Cuphead](Cuphead/Bepinex) | Cuphead | pack | [173](https://www.nexusmods.com/cuphead/mods/173) |
-| [NineSolsPowerMod](NineSols/NineSolsPowerMod) | Nine Sols | BepInEx 5 | [16](https://www.nexusmods.com/ninesols/mods/16) |
-| [BepInEx pack for Nine Sols](NineSols/BepInExPack) | Nine Sols | pack | [17](https://www.nexusmods.com/ninesols/mods/17) |
 | [CultOfQoL_PTBR](CultOfTheLamb/CultOfQoL_PTBR) | Cult of the Lamb | BepInEx 5 | [84](https://www.nexusmods.com/cultofthelamb/mods/84) |
 | [UltraCleaningTools](CrimeSceneCleaner/UltraCleaningTools) | Crime Scene Cleaner | MelonLoader | [10](https://www.nexusmods.com/crimescenecleaner/mods/10) |
 | [MouseTrainer](MOUSE/MouseTrainer) | MOUSE: P.I. For Hire | BepInEx 5 | [23](https://www.nexusmods.com/mousepiforhire/mods/23) |
 | [DefluxorNoOverheat](Stray/DefluxorNoOverheat) | Stray | BepInEx 5 | [390](https://www.nexusmods.com/stray/mods/390) |
-| [NoDurability](Hytale/NoDurability) | Hytale | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/nodurability) |
-| [GodMode](Hytale/GodMode) | Hytale | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/god-mode-menu) |
-| [VoidChest](Hytale/VoidChest) | Hytale | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/void-chest) |
-| [ShopWishlist](Brotato/ShopWishlist) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3771061737) |
-| [ModOptionsTabs](Brotato/ModOptionsTabs) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769887447) |
-| [EnemiesEvolve](Brotato/EnemiesEvolve) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769878400) |
+| [OfflineBots](TrickyTowers/OfflineBots) | Tricky Towers | BepInEx 5 (x86) | [7](https://www.nexusmods.com/trickytowers/mods/7) |
 
 ## 📦 Install
 
