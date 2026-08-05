@@ -31,6 +31,7 @@ published on Nexus / Workshop), screenshots and a short README.
 | [DefluxorNoOverheat](Stray/DefluxorNoOverheat) | Stray | BepInEx 5 | [390](https://www.nexusmods.com/stray/mods/390) |
 | [NoDurability](Hytale/NoDurability) | Hytale | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/nodurability) |
 | [GodMode](Hytale/GodMode) | Hytale | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/god-mode-menu) |
+| [VoidChest](Hytale/VoidChest) | Hytale | Server plugin (Java) | [CurseForge](https://www.curseforge.com/hytale/mods/void-chest) |
 | [ShopWishlist](Brotato/ShopWishlist) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3771061737) |
 | [ModOptionsTabs](Brotato/ModOptionsTabs) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769887447) |
 | [EnemiesEvolve](Brotato/EnemiesEvolve) | Brotato | GDScript (ModLoader) | [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3769878400) |
