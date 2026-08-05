@@ -10,6 +10,11 @@ Toggle God Mode, Infinite Ammo, Double Damage, Double Health and Homing Bullets 
 - F1-F5 hotkeys, instant toggle
 - No overlay - quick on-screen notifications
 
+## Translating
+
+Texts live in `I18n.cs`, one dictionary per language keyed by the English string. To add a
+language, copy the dictionary, translate the values and return it from `PickTable`.
+
 ## Install
 
 Download on [Nexus Mods](https://www.nexusmods.com/mousepiforhire/mods/23). Extract into the game folder - the DLL lands in `BepInEx/plugins/`. Requires BepInEx 5.

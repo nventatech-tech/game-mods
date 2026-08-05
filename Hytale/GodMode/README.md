@@ -8,6 +8,12 @@ Hytale server plugin. Infinite health, stamina, oxygen, mana and signature energ
 - Applies instantly, saves with your character
 - No config files, no dependencies, nothing runs per tick
 
+## Translating
+
+Texts live in `resources/Server/Languages/<locale>/server.lang`. To add a language, copy the
+`en-US` folder, rename it to the locale and translate the values. Command descriptions stay in
+English: the server has no translation hook for them.
+
 ## Install
 Drop `GodMode-x.y.z.jar` into your Mods folder:
 - Windows: `%AppData%\Hytale\UserData\Mods`

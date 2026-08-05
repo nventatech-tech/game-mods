@@ -10,7 +10,14 @@ Text search and category filters (All, Favorites, Cars, Motorcycles, Armed) insi
 - All / Favorites / Cars / Motorcycles / Armed categories, last one remembered
 - Hides the vanilla "still in Beta" disclaimer
 - Native UI - no extra windows
-- English & PT-BR
+- Options in the Mod Settings menu (optional dependency)
+- English & PT-BR, following the game language
+
+## Translating
+
+Texts live in `Localization.reds`. To add a language, copy a package class, translate the
+strings and add a `case` in `GetPackage`. A translation can also ship as a separate mod:
+register your own `ModLocalizationProvider` with the same keys.
 
 ## Install
 

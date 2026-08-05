@@ -11,6 +11,11 @@ Bigger cleaning area, sprays and liquids never run out, infinite power washer wa
 - Infinite washer water - backpack too
 - Infinite trash bag capacity
 
+## Translating
+
+Texts live in `I18n.cs`, one dictionary per language keyed by the English string. To add a
+language, copy the dictionary, translate the values and return it from `PickTable`.
+
 ## Install
 
 Download on [Nexus Mods](https://www.nexusmods.com/crimescenecleaner/mods/10). Extract into the game folder - the DLL lands in `Mods/`. Requires MelonLoader.

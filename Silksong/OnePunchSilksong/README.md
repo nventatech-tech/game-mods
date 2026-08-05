@@ -11,6 +11,11 @@ Needle and skill damage up to one-hit kill, immortality, infinite jumps and silk
 - Rosary multiplier, extra tool slots
 - Every option independent - toggle F6
 
+## Translating
+
+Texts live in `I18n.cs`, one dictionary per language keyed by the English string. To add a
+language, copy the dictionary, translate the values and return it from `PickTable`.
+
 ## Install
 
 Download on [Nexus Mods](https://www.nexusmods.com/hollowknightsilksong/mods/1215). Extract into the game folder - the DLL lands in `BepInEx/plugins/`. Requires BepInEx 5.

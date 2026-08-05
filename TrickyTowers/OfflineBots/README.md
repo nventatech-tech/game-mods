@@ -9,6 +9,11 @@ Adds AI opponents to local multiplayer, so you can play Race, Survival and Puzzl
 - Bots use the full game stack: wind, spells against them, win conditions
 - Reserved slots show "BOT" on the player select screen
 
+## Translating
+
+Texts live in `I18n.cs`, one dictionary per language keyed by the English string. To add a
+language, copy the dictionary, translate the values and return it from `PickTable`.
+
 ## Install
 1. Install BepInEx 5 x86 in the game folder (game is 32-bit)
 2. Drop `TrickyTowersOfflineBots.dll` into `BepInEx/plugins`

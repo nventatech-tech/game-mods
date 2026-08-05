@@ -10,6 +10,11 @@ God mode, health/attack/gold multipliers, infinite dash and unlimited jades. Eve
 - Infinite dash, unlimited jades
 - Toggle in Configuration Manager
 
+## Translating
+
+Texts live in `I18n.cs`, one dictionary per language keyed by the English string. To add a
+language, copy the dictionary, translate the values and return it from `PickTable`.
+
 ## Install
 
 Download on [Nexus Mods](https://www.nexusmods.com/ninesols/mods/16). Extract into the game folder - the DLL lands in `BepInEx/plugins/`. Requires BepInEx 5.

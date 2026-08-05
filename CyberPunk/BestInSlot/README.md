@@ -9,7 +9,13 @@ Gold TOP tag on the best item of every category across all item screens. B equip
 - Gold TOP tag on every best item
 - B in the backpack - equip best loadout
 - N at vendors - sell non-TOP weapons
-- English & PT-BR
+- English & PT-BR, following the game language
+
+## Translating
+
+Texts live in `Localization.reds`. To add a language, copy a package class, translate the
+strings and add a `case` in `GetPackage`. A translation can also ship as a separate mod:
+register your own `ModLocalizationProvider` with the same keys.
 
 ## Install
 
