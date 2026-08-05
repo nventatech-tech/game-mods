@@ -23,7 +23,7 @@ Drop `VoidChest-x.y.z.jar` into your Mods folder:
 
 Singleplayer works out of the box; on multiplayer servers only the server needs it.
 
-CurseForge page: TODO
+CurseForge page: https://www.curseforge.com/hytale/mods/void-chest
 
 ## Support
-If this mod saved your runs: [PayPal](https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD)
+If this mod made your storage life easier: [PayPal](https://www.paypal.com/donate/?business=SR28XBBCYSPHE&no_recurring=0&item_name=Help+me+buy+a+coffee.&currency_code=USD)
