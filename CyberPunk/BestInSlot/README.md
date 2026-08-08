@@ -4,16 +4,21 @@
 
 ![cover](screenshots/cover.png)
 
-Gold TOP tag on the best item of every category across all item screens. B equips the best loadout; N sells every non-TOP weapon.
+Gold TOP tag on the best item of every category across all item screens. B equips the best loadout; N sells non-TOP weapons and clothes.
 
 ## ✨ Features
 - Gold TOP tag on every best item
-- B in the backpack - equip best loadout
-- N at vendors - sell non-TOP weapons
+- Green (+) tag on items better than what you have equipped
+- B in the backpack or inventory - equip best loadout
+- N at vendors - sell non-TOP weapons and clothes
+- Options in the Mod Settings menu (optional dependency)
 - English & PT-BR, following the game language
 
 ## 📸 Screenshots
-![screenshot](screenshots/screenshot-top-mochila.jpg)
+![screenshot](screenshots/backpack-weapons.jpg)
+![screenshot](screenshots/backpack-clothes.jpg)
+![screenshot](screenshots/inventory-equip-best.jpg)
+![screenshot](screenshots/mod-settings.jpg)
 
 ## 🌍 Translating
 Texts live in `Localization.reds`. To add a language, copy a package class, translate the
