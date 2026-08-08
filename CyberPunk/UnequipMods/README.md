@@ -9,11 +9,15 @@ Unequip weapon and clothing mods back to your inventory instead of losing them. 
 ## ✨ Features
 - Native unequip button & flow
 - Mods return to your inventory
+- Selling, disassembling and dropping auto-strip mods first
+- Options in the Mod Settings menu (optional dependency)
 - Nothing destroyed, no extra windows
+- English & PT-BR, following the game language
 
 ## 📸 Screenshots
 ![screenshot](screenshots/screenshot-antes-remover.jpg)
 ![screenshot](screenshots/screenshot-depois-remover.jpg)
+![screenshot](screenshots/mod-settings.jpg)
 
 ## 🌍 Translating
 Texts live in `Localization.reds`. To add a language, copy a package class, translate the
