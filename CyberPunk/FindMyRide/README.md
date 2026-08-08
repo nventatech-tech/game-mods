@@ -4,24 +4,28 @@
 
 ![cover](screenshots/cover.png)
 
-Text search and category filters (All, Favorites, Cars, Motorcycles, Armed) inside the native vehicle call menu (hold V). No extra windows.
+Text search, category tabs and sorting inside the native vehicle call menu (hold V). No extra windows.
 
 ## ✨ Features
 - Text search in the vehicle call menu, by name or manufacturer
-- All / Favorites / Cars / Motorcycles / Armed categories, last one remembered
+- Category tabs: All / Favorites / Recent / Cars / Motorcycles / Armed, last one remembered
+- Recent tab lists the last 10 vehicles you summoned
+- Hide vehicles you never use with H; they move to a Hidden tab
+- Sort by name, manufacturer or vehicle type; favorites-first toggle
+- Manufacturer and type shown for the selected vehicle
 - Hides the vanilla "still in Beta" disclaimer
 - Native UI - no extra windows
 - Options in the Mod Settings menu (optional dependency)
 - English & PT-BR, following the game language
 
 ## 📸 Screenshots
-![screenshot](screenshots/all.png)
-![screenshot](screenshots/favorites.png)
-![screenshot](screenshots/cars.png)
-![screenshot](screenshots/motorcycles.png)
-![screenshot](screenshots/armed.png)
-![screenshot](screenshots/search.png)
-![screenshot](screenshots/search-manufacturer.png)
+![screenshot](screenshots/all.jpg)
+![screenshot](screenshots/favorites.jpg)
+![screenshot](screenshots/recent.jpg)
+![screenshot](screenshots/cars.jpg)
+![screenshot](screenshots/motorcycles.jpg)
+![screenshot](screenshots/armed.jpg)
+![screenshot](screenshots/hidden.jpg)
 
 ## 🌍 Translating
 Texts live in `Localization.reds`. To add a language, copy a package class, translate the
